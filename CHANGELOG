@@ -1,0 +1,23 @@
+=== 1.3 2014-07-03
+
+* Replaced accidental use of bracket for array
+
+=== 1.3 2013-05-02
+
+* Added option to disable https peer validation
+
+=== 1.2 2013-01-10
+
+* Added Login validation
+
+=== 1.1.1 2012-11-12
+
+* Removed use of php's new array notation (brackets)
+
+=== 1.1.0 2012-11-01
+
+* Added Lists, Fields, and Webhooks
+
+=== 1.0.0 2012-08-23
+
+* First version
