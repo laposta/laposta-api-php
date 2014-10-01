@@ -8,7 +8,8 @@ Class Laposta_Util {
 		$api_key = $options['api_key'];
 		$post = $options['post'];
 		$method = $options['method'];
-		$timeout = is_numeric($options['timeout']) ? $options['timeout'] : 15;
+		$timeout = 15;
+		if (isset($options['timeout']) && is_numeric($options['timeout'])) $timeout = $options['timeout'];
 		$httpsDisableVerifyPeer = $options['httpsDisableVerifyPeer'];
 
 		$error = false;
@@ -50,7 +51,7 @@ Class Laposta_Util {
 		}
 		curl_close($ch);
 
-		return array('error' => $error, 'error_msg' => $error_msg, 'status' => $info['http_code'], 'body' => $body, 'info' => $info);
+		return array('error' => $error, 'error_msg' => isset($error_msg) ? $error_msg : '', 'status' => $info['http_code'], 'body' => $body, 'info' => $info);
 	}
 
 	public static function utf8($value) {

@@ -13,10 +13,10 @@ class Laposta_Resource {
 	protected function connect($data = array()) {
 
 		// request parts
-		$path = is_array($data['path']) ? $data['path'] : array();
-		$parameters = is_array($data['parameters']) ? $data['parameters'] : array();
-		$post = is_array($data['post']) ? $data['post'] : array();
-		$method = $data['method'];
+		$path = isset($data['path']) ? (is_array($data['path']) ? $data['path'] : array()) : array();
+		$parameters = isset($data['parameters']) ? (is_array($data['parameters']) ? $data['parameters'] : array()) : array();
+		$post = isset($data['post']) ? (is_array($data['post']) ? $data['post'] : array()) : array();
+		$method = isset($data['method']) ? $data['method'] : NULL;
 
 		// start with base url
 		$url = $this->formatBaseUrl();
