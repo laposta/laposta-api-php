@@ -25,4 +25,29 @@ try {
 	// you can use the information in $e to react to the exception
 	print '<pre>';print_r($e);print '</pre>';
 }
+
+// example with select_multiple options
+/*
+try {
+	// create new field, insert info as argument
+	// $result will contain een array with the response from the server
+	// Note: we need to put 'true' in quotes, because php translates true to 1 and false to [empty]
+	$result = $field->create(array(
+		'name' => 'Favoriete kleuren',
+		'datatype' => 'select_multiple',
+		'required' => 'false',
+		'in_form' => 'false',
+		'in_list' => 'false',
+		'options' => array('Rood', 'Groen', 'Blauw')
+		)
+	);
+
+	print '<pre>';print_r($result);print '</pre>';
+
+} catch (Exception $e) {
+
+	// you can use the information in $e to react to the exception
+	print '<pre>';print_r($e);print '</pre>';
+}
+*/
 ?>
