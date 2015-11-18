@@ -127,7 +127,8 @@ class FormField {
 	private function getHtmlInputSelectMulti() {
 
 		$count = 0;
-		foreach($this->field['options'] as $option) {
+		$html = '';
+		if ($this->field['options']) foreach($this->field['options'] as $option) {
 
 			// unique id for each checkbox
 			$el_id = 'id-' . $this->field['field_id'] . '-' . $count++;
