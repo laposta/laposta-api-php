@@ -1,3 +1,7 @@
+=== 1.5 2016-05-19
+
+* Added more support voor campaigns (create, fill, send)
+
 === 1.4 2014-12-11
 
 * Added support voor campaigns (only GET is available)
