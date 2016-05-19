@@ -1,14 +1,14 @@
 <?php
 require_once('../../lib/Laposta.php');
-Laposta::setApiKey('JdMtbsMq2jqJdQZD9AHC');
+Laposta::setApiKey("JdMtbsMq2jqJdQZD9AHC");
 
-// initialize campaign
+// initialize campaign object
 $campaign = new Laposta_Campaign();
 
 try {
-	// get all campaign from account
+	// delete campaign, use campaign_id as argument
 	// $result will contain een array with the response from the server
-	$result = $campaign->all();
+	$result = $campaign->delete("mvqedad500");
 	print '<pre>';print_r($result);print '</pre>';
 
 } catch (Exception $e) {

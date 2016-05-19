@@ -1,5 +1,5 @@
 <?php
-// Tested on PHP 5.2, 5.3, 5.4
+// Tested on PHP 5.2, 5.3, 5.4, 5.5, 5.6
 
 if (!function_exists('curl_init')) {
 	throw new Exception('Laposta needs the CURL PHP extension.');
@@ -14,7 +14,7 @@ Class Laposta {
 	public static $apiKey;
 	public static $https = true;
 	public static $httpsDisableVerifyPeer = false;
-	public static $apiBase = 'api.laposta.nl/v2';
+	public static $apiBase = 'api.laposta.nl/v2-test';
 
 	const VERSION = '1.3.0';
 

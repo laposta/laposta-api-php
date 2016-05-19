@@ -51,7 +51,7 @@ Class Laposta_Request {
 		$result = json_decode($response['body'], true);
 
 		// no problems decoding?
-		if (empty($result) || !is_array($result)) {
+		if (!is_array($result)) {
 			throw new Laposta_Error('Invalid response body from API', $response['status'], $response['body']);
 		}
 

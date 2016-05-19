@@ -1,14 +1,14 @@
 <?php
-require_once('../../lib/Laposta.php');
+require_once('../../../lib/Laposta.php');
 Laposta::setApiKey('JdMtbsMq2jqJdQZD9AHC');
+Laposta::setHttpsDisableVerifyPeer(true);
 
-// initialize campaign
+// initialize campaign object
 $campaign = new Laposta_Campaign();
 
 try {
-	// get all campaign from account
-	// $result will contain een array with the response from the server
-	$result = $campaign->all();
+	// instruct campaign to be sent right away, use campaign_id as argument
+	$result = $campaign->update('pbrqulw2tc', array(), 'action', 'send');
 	print '<pre>';print_r($result);print '</pre>';
 
 } catch (Exception $e) {

@@ -7,7 +7,6 @@ class Laposta_Resource {
 	public function __construct($classname) {
 
 		$this->classname = $classname;
-
 	}
 
 	protected function connect($data = array()) {
@@ -32,8 +31,10 @@ class Laposta_Resource {
 		}
 
 		// build query for post
-		if (count($post)) {
-			$post = http_build_query($post);
+		if (is_array($post)) {
+
+			if ($post) $post = http_build_query($post);
+			else $post = true; // empty post
 		}
 
 		return Laposta_Request::connect(array(
@@ -53,6 +54,7 @@ class Laposta_Resource {
 
 	private function getResource() {
 
+		// remove 'Laposta_'
 		$resource = strtolower(substr($this->classname, strpos($this->classname, '_') + 1));
 
 		return $resource;

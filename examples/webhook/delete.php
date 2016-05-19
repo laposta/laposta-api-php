@@ -6,7 +6,7 @@ Laposta::setApiKey("JdMtbsMq2jqJdQZD9AHC");
 $webhook = new Laposta_Webhook("BaImMu3JZA");
 
 try {
-	// (permanently) delete webhook, use webhook_id or email as argument
+	// (permanently) delete webhook, use webhook_id as argument
 	// $result will contain een array with the response from the server
 	$result = $webhook->delete("iH52rJwguo");
 	print '<pre>';print_r($result);print '</pre>';

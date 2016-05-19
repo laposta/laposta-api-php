@@ -2,13 +2,16 @@
 require_once('../../lib/Laposta.php');
 Laposta::setApiKey('JdMtbsMq2jqJdQZD9AHC');
 
-// initialize campaign
+// new campaign object
 $campaign = new Laposta_Campaign();
 
 try {
-	// get all campaign from account
+	// update campaign, use id as first argument
 	// $result will contain een array with the response from the server
-	$result = $campaign->all();
+	$result = $campaign->update('pbrqulw2tc', array(
+		'subject' => 'This is the MODIFIED subject'
+	));
+
 	print '<pre>';print_r($result);print '</pre>';
 
 } catch (Exception $e) {

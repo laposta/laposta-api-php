@@ -1,5 +1,5 @@
 <?php
-require_once('../../lib/Laposta.php');
+require_once('../../../lib/Laposta.php');
 Laposta::setApiKey('JdMtbsMq2jqJdQZD9AHC');
 Laposta::setHttpsDisableVerifyPeer(true);
 
@@ -7,9 +7,10 @@ Laposta::setHttpsDisableVerifyPeer(true);
 $campaign = new Laposta_Campaign();
 
 try {
-	// get campaign info, use campaign_id as argument
-	// $result will contain een array with the response from the server
-	$result = $campaign->get('lhnjt8osdc');
+	// instruct campaign to be sent at specified time, use campaign_id as argument
+	$result = $campaign->update('94wb6pucra', array(
+		'delivery_requested' => '2016-05-20 12:00'
+	), 'action', 'schedule');
 	print '<pre>';print_r($result);print '</pre>';
 
 } catch (Exception $e) {

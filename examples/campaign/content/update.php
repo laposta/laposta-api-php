@@ -1,14 +1,17 @@
 <?php
-require_once('../../lib/Laposta.php');
+require_once('../../../lib/Laposta.php');
 Laposta::setApiKey('JdMtbsMq2jqJdQZD9AHC');
+Laposta::setHttpsDisableVerifyPeer(true);
 
-// initialize campaign
+// initialize campaign object
 $campaign = new Laposta_Campaign();
 
 try {
-	// get all campaign from account
+	// update campaign content info, use campaign_id as argument
 	// $result will contain een array with the response from the server
-	$result = $campaign->all();
+	$result = $campaign->update('pbrqulw2tc', array(
+		'import_url' => 'http://google.com'
+	), 'content');
 	print '<pre>';print_r($result);print '</pre>';
 
 } catch (Exception $e) {
