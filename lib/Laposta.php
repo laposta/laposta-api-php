@@ -14,7 +14,7 @@ Class Laposta {
 	public static $apiKey;
 	public static $https = true;
 	public static $httpsDisableVerifyPeer = false;
-	public static $apiBase = 'api.laposta.nl/v2-test';
+	public static $apiBase = 'api.laposta.nl/v2';
 
 	const VERSION = '1.5.0';
 
