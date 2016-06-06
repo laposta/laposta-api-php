@@ -14,8 +14,8 @@ class Laposta_Resource {
 		// request parts
 		$path = isset($data['path']) ? (is_array($data['path']) ? $data['path'] : array()) : array();
 		$parameters = isset($data['parameters']) ? (is_array($data['parameters']) ? $data['parameters'] : array()) : array();
-		$post = isset($data['post']) ? (is_array($data['post']) ? $data['post'] : array()) : array();
-		$method = isset($data['method']) ? $data['method'] : NULL;
+		$post = isset($data['post']) ? (is_array($data['post']) ? $data['post'] : array()) : null;
+		$method = isset($data['method']) ? $data['method'] : null;
 
 		// start with base url
 		$url = $this->formatBaseUrl();
