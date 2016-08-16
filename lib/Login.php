@@ -1,5 +1,7 @@
 <?php
-class Laposta_Login extends Laposta_Resource {
+namespace Laposta;
+
+class Login extends Resource {
 
 	public function __construct() {
 

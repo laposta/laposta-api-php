@@ -1,5 +1,7 @@
 <?php
-class Laposta_Resource {
+namespace Laposta;
+
+class Resource {
 
 	protected $result;
 	private $classname;

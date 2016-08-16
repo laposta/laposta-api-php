@@ -1,5 +1,5 @@
 <?php
-// Tested on PHP 5.2, 5.3, 5.4, 5.5, 5.6
+namespace Laposta;
 
 if (!function_exists('curl_init')) {
 	throw new Exception('Laposta needs the CURL PHP extension.');
@@ -46,15 +46,4 @@ Class Laposta {
 		return self::getProtocol() . '://' . self::$apiBase;
 	}
 }
-
-require(dirname(__FILE__) . '/Laposta/Util.php');
-require(dirname(__FILE__) . '/Laposta/Error.php');
-require(dirname(__FILE__) . '/Laposta/Resource.php');
-require(dirname(__FILE__) . '/Laposta/Request.php');
-require(dirname(__FILE__) . '/Laposta/Member.php');
-require(dirname(__FILE__) . '/Laposta/List.php');
-require(dirname(__FILE__) . '/Laposta/Field.php');
-require(dirname(__FILE__) . '/Laposta/Campaign.php');
-require(dirname(__FILE__) . '/Laposta/Webhook.php');
-require(dirname(__FILE__) . '/Laposta/Login.php');
 ?>

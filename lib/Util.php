@@ -1,5 +1,7 @@
 <?php
-Class Laposta_Util {
+namespace Laposta;
+
+class Util {
 
 	public static function connect($options) {
 

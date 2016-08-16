@@ -1,5 +1,7 @@
 <?php
-class Laposta_Campaign extends Laposta_Resource {
+namespace Laposta;
+
+class Campaign extends Resource {
 
 	public function __construct() {
 

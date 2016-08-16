@@ -1,5 +1,7 @@
 <?php
-Class Laposta_Request {
+namespace Laposta;
+
+class Request {
 
 	public static function connect($data) {
 

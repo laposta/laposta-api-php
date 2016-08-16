@@ -1,0 +1,14 @@
+{
+    "name": "laposta/laposta-api-php",
+    "description": "Laposta PHP API wrapper",
+    "require": {
+        "php": "5.3",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Laposta\\": "lib"
+        }
+    },
+}

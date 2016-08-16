@@ -1,5 +1,7 @@
 <?php
-class Laposta_List extends Laposta_Resource {
+namespace Laposta;
+
+class List extends Resource {
 
 	public function __construct() {
 
