@@ -6,7 +6,7 @@ class Request {
 	public static function connect($data) {
 
 		// result from server
-		$response = Laposta_Util::connect(array(
+		$response = Util::connect(array(
 			'url' => $data['url'], 
 			'headers' => self::getHeaders(), 
 			'api_key' => Laposta::getApiKey(), 
@@ -17,7 +17,7 @@ class Request {
 
 		// check for CURL error
 		if ($response['error']) {
-			throw new Laposta_Error('Connection error: ' . $response['error_msg'], $response['status'], $response['body']);
+			throw new Error('Connection error: ' . $response['error_msg'], $response['status'], $response['body']);
 		}
 
 		// decode JSON
@@ -25,7 +25,7 @@ class Request {
 
 		// check for API errors
 		if ($response['status'] < 200 || $response['status'] >= 300) {
-			throw new Laposta_Error('API error: ' . $result['error']['message'], $response['status'], $response['body'], $result);
+			throw new Error('API error: ' . $result['error']['message'], $response['status'], $response['body'], $result);
 		}
 
 		return $result;
@@ -54,7 +54,7 @@ class Request {
 
 		// no problems decoding?
 		if (!is_array($result)) {
-			throw new Laposta_Error('Invalid response body from API', $response['status'], $response['body']);
+			throw new Error('Invalid response body from API', $response['status'], $response['body']);
 		}
 
 		return $result;

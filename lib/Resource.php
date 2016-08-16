@@ -39,7 +39,7 @@ class Resource {
 			else $post = true; // empty post
 		}
 
-		return Laposta_Request::connect(array(
+		return Request::connect(array(
 			'url' => $url, 
 			'post' => $post,
 			'method' => $method
@@ -56,8 +56,7 @@ class Resource {
 
 	private function getResource() {
 
-		// remove 'Laposta_'
-		$resource = strtolower(substr($this->classname, strpos($this->classname, '_') + 1));
+		$resource = strtolower(str_replace(['Laposta\\', '_'], '', $this->classname)); // Remove _ (List_ class) and namespace
 
 		return $resource;
 	}

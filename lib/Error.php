@@ -1,7 +1,7 @@
 <?php
 namespace Laposta;
 
-class Error extends Exception {
+class Error extends \Exception {
 
 	public function __construct($message=null, $http_status=null, $http_body=null, $json_body=null) {
 
