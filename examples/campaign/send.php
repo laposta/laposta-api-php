@@ -1,11 +1,10 @@
 <?php
-require_once('../../lib/Laposta.php');
-Laposta::setApiKey('JdMtbsMq2jqJdQZD9AHC');
+require_once('../setup.php');
 
 // Send existing campaign.
 
 // new campaign object
-$campaign = new Laposta_Campaign();
+$campaign = new Laposta\Campaign();
 
 try {
 

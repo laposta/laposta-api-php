@@ -1,9 +1,8 @@
 <?php
-require_once('../../lib/Laposta.php');
-Laposta::setApiKey("JdMtbsMq2jqJdQZD9AHC");
+require_once('../setup.php');
 
 // initialize list
-$list = new Laposta_List();
+$list = new Laposta\List_();
 
 try {
 	// get all members from this list

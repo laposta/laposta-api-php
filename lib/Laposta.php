@@ -9,7 +9,7 @@ if (!function_exists('json_decode')) {
 	throw new Exception('Laposta needs the JSON PHP extension.');
 }
 
-Class Laposta {
+class Laposta {
 
 	public static $apiKey;
 	public static $https = true;

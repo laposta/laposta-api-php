@@ -50,7 +50,7 @@ class Form {
 		$email = $this->getEmailField();
 
 		// try to submit to api
-		$member = new Laposta_Member($this->list_id);
+		$member = new Laposta\Member($this->list_id);
 		$error = array();
 
 		try {
@@ -79,7 +79,7 @@ class Form {
 		$fields = array();
 
 		// initialize field api-object with list_id
-		$field = new Laposta_Field($this->list_id);
+		$field = new Laposta\Field($this->list_id);
 
 		try {
 			// get all fields from this list
