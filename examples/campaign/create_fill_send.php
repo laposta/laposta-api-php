@@ -35,5 +35,8 @@ $campaign->update($campaign_id, array(
 	'inline_css' => 'true'
 ), 'content');
 
+// stuur een testmail
+$campaign->update($campaign_id, array('email' => 'test@example.net'), 'action', 'testmail');
+
 // en verstuur direct
 $campaign->update($campaign_id, array(), 'action', 'send');
