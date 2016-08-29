@@ -1,6 +1,5 @@
 <?php
-require_once('../../../lib/Laposta.php');
-Laposta::setApiKey("JdMtbsMq2jqJdQZD9AHC");
+require_once('../../setup.php');
 
 // includes for form (you might want to namespace these classes)
 require_once('./inc/Form.php');

@@ -1,5 +1,9 @@
 <?php
-class Laposta_List extends Laposta_Resource {
+namespace Laposta;
+
+// It is not possible to name this class List due to PHP's list() function
+
+class List_ extends Resource {
 
 	public function __construct() {
 

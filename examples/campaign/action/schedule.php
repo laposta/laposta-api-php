@@ -1,10 +1,8 @@
 <?php
-require_once('../../../lib/Laposta.php');
-Laposta::setApiKey('JdMtbsMq2jqJdQZD9AHC');
-Laposta::setHttpsDisableVerifyPeer(true);
+require_once('../../setup.php');
 
 // initialize campaign object
-$campaign = new Laposta_Campaign();
+$campaign = new Laposta\Campaign();
 
 try {
 	// instruct campaign to be sent at specified time, use campaign_id as argument

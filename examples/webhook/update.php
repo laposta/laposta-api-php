@@ -1,9 +1,8 @@
 <?php
-require_once('../../lib/Laposta.php');
-Laposta::setApiKey("JdMtbsMq2jqJdQZD9AHC");
+require_once('../setup.php');
 
 // initialize webhook with list_id
-$webhook = new Laposta_Webhook("BaImMu3JZA");
+$webhook = new Laposta\Webhook("BaImMu3JZA");
 
 try {
 	// update webhook, insert info as argument

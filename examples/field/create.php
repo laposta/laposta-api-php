@@ -1,9 +1,8 @@
 <?php
-require_once('../../lib/Laposta.php');
-Laposta::setApiKey("JdMtbsMq2jqJdQZD9AHC");
+require_once('../setup.php');
 
 // initialize field with list_id
-$field = new Laposta_Field("srbhotdwob");
+$field = new Laposta\Field("srbhotdwob");
 
 try {
 	// create new field, insert info as argument

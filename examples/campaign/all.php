@@ -1,9 +1,8 @@
 <?php
-require_once('../../lib/Laposta.php');
-Laposta::setApiKey('JdMtbsMq2jqJdQZD9AHC');
+require_once('../setup.php');
 
 // initialize campaign
-$campaign = new Laposta_Campaign();
+$campaign = new Laposta\Campaign();
 
 try {
 	// get all campaign from account

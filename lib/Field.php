@@ -1,5 +1,7 @@
 <?php
-class Laposta_Webhook extends Laposta_Resource {
+namespace Laposta;
+
+class Field extends Resource {
 
 	private $list_id;
 
@@ -10,10 +12,10 @@ class Laposta_Webhook extends Laposta_Resource {
 		parent::__construct(get_class());
 	}
 
-	public function get($webhook_id) {
+	public function get($field_id) {
 
 		return parent::connect(array(
-			'path' => array($webhook_id),
+			'path' => array($field_id),
 			'parameters' => array('list_id' => $this->list_id)
 			)
 		);
@@ -30,22 +32,22 @@ class Laposta_Webhook extends Laposta_Resource {
 		);
 	}
 
-	public function update($webhook_id, $data) {
+	public function update($field_id, $data) {
 
 		// add list_id to data
 		$data['list_id'] = $this->list_id;
 
 		return parent::connect(array(
-			'path' => array($webhook_id),
+			'path' => array($field_id),
 			'post' => $data
 			)
 		);
 	}
 
-	public function delete($webhook_id) {
+	public function delete($field_id) {
 
 		return parent::connect(array(
-			'path' => array($webhook_id),
+			'path' => array($field_id),
 			'parameters' => array('list_id' => $this->list_id),
 			'method' => 'DELETE'
 			)

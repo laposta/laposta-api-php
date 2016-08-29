@@ -1,13 +1,12 @@
 <?php
-require_once('../../lib/Laposta.php');
-Laposta::setApiKey("JdMtbsMq2jqJdQZD9AHC");
+require_once('../setup.php');
 
 if ($_POST) {
 
 	$msg = '';
 
 	// initialize login object
-	$login = new Laposta_Login();
+	$login = new Laposta\Login();
 
 	try {
 		// get login result, use login and password as argument
@@ -38,7 +37,7 @@ if ($_POST) {
 <body>
 <form method="post">
 <h2>Inloggen</h2>
-<? // display message
+<?php // display message
 if ($msg) print '<p style="color:red">' . $msg . '</p>' ?>
 <p>
 U kunt hier inloggen met de gegevens die u van ons hebt gekregen.

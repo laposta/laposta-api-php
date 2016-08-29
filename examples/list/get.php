@@ -1,10 +1,8 @@
 <?php
-require_once('../../lib/Laposta.php');
-Laposta::setApiKey("JdMtbsMq2jqJdQZD9AHC");
-Laposta::setHttpsDisableVerifyPeer(true);
+require_once('../setup.php');
 
 // initialize list with list_id
-$list = new Laposta_List();
+$list = new Laposta\List_();
 
 try {
 	// get list info, use list_id as argument

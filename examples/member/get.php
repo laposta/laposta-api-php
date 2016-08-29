@@ -1,10 +1,8 @@
 <?php
-require_once('../../lib/Laposta.php');
-Laposta::setApiKey("JdMtbsMq2jqJdQZD9AHC");
-//Laposta::setHttps(false);
+require_once('../setup.php');
 
 // initialize member with list_id
-$member = new Laposta_Member("BaImMu3JZA");
+$member = new Laposta\Member("BaImMu3JZA");
 
 try {
 	// get member info, use member_id or email as argument
