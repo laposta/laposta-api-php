@@ -1,0 +1,20 @@
+{
+    "name": "laposta/laposta-api-php",
+    "type": "library",
+    "description": "Laposta api, free api to laposta.nl",
+    "keywords": ["email", "marketing", "newsletter", "api", "email-marketing"],
+    "homepage": "http://laposta.nl",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Stijn van der Ree",
+            "email": "stijn@laposta.nl"
+        }
+    ],
+    "require": {
+        "php": ">=5.2"
+    },
+    "autoload": {
+        "files": ["lib/Laposta.php"]
+    }
+}
