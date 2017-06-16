@@ -31,10 +31,10 @@ class Laposta_List extends Laposta_Resource {
 		);
 	}
 
-	public function delete($list_id) {
+	public function delete($list_id, $endpoint_2 = '', $endpoint_3 = '') {
 
 		return parent::connect(array(
-			'path' => array($list_id),
+			'path' => array($list_id, $endpoint_2, $endpoint_3),
 			'method' => 'DELETE'
 			)
 		);
