@@ -20,7 +20,7 @@ class Form {
 
 		// we should have fields
 		if (!$this->fields) {
-			return 'Sorry, the form cannot be shown.';
+			return 'The form cannot be shown. Check the API and list_id keys.';
 		}
 
 		$html = '';
@@ -70,7 +70,7 @@ class Form {
 		// save error
 		$this->error = $error;
 
-		// return whether succeeded
+		// return if an error was found
 		return $error ? false : true;
 	}
 
@@ -81,6 +81,7 @@ class Form {
 		// initialize field api-object with list_id
 		$field = new Laposta_Field($this->list_id);
 
+		$result = array();
 		try {
 			// get all fields from this list
 			// $result will contain een array with the response from the server
@@ -91,7 +92,7 @@ class Form {
 			// you can use the information in $e to react to the exception
 		}
 
-		if ($result['data']) {
+		if ($result && $result['data']) {
 
 			foreach($result['data'] as $field) {
 				$fields[] = $field['field'];

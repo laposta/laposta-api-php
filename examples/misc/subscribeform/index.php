@@ -1,17 +1,21 @@
 <?php
 require_once('../../../lib/Laposta.php');
-Laposta::setApiKey("JdMtbsMq2jqJdQZD9AHC");
+//Laposta::setApiKey("JdMtbsMq2jqJdQZD9AHC");
+Laposta::setApiKey("yuiB1TUFegFAQEAxjG0F");
 
 // includes for form (you might want to namespace these classes)
 require_once('./inc/Form.php');
 require_once('./inc/FormField.php');
+
+// you can translate error messages here
 require_once('./inc/lang.php');
 
 // our form
 $form = new Form(array(
 
 	// set the id of the list to be used
-	'list_id' => 'BaImMu3JZA',
+	//'list_id' => 'BaImMu3JZA',
+	'list_id' => 'dqqu0eijzs',
 
 	// language from lang.php
 	'lang' => $lang
@@ -24,10 +28,9 @@ if ($_POST) {
 	// if errors are found, the form will be rendered again
 	if ($form->submit($_POST)) {
 
-		// done! redirect?
+		// No errors; we are done. You can place a redirect here.
 		print "DONE";
 		exit;
-
 	} else {
 		$errors = true;
 	}
@@ -46,7 +49,7 @@ if ($_POST) {
 <div class="wrapper">
 <h1>Subscribe to our newsletter</h1>
 <div class="intro">Some text here.</div>
-<?php if ($errors) { ?><div class="errors">Sorry, there was an error</div><?php } ?>
+<?php if ($errors) { ?><div class="errors"><?php print htmlspecialchars($lang['error']) ?></div><?php } ?>
 
 <form method="post">
 <?php print $form->render(); ?>

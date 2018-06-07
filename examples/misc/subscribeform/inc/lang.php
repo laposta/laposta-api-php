@@ -1,6 +1,7 @@
 <?
 $lang = array(
 	'select_choose' => 'Choose one',
+	'error' => 'Sorry, there was an error',
 	'errors' => array(
 		'201' => 'This field cannot be empty',
 		'202' => 'Incorrect syntax',
