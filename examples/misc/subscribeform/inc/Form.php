@@ -28,6 +28,9 @@ class Form {
 		// walk through fields
 		foreach($this->fields as $field) {
 
+			// field should be visible
+			if (!$field['in_form']) continue;
+
 			// let class handle this
 			$html .= (new FormField(array(
 				'field' => $field,

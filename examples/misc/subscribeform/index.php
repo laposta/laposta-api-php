@@ -1,7 +1,6 @@
 <?php
 require_once('../../../lib/Laposta.php');
-//Laposta::setApiKey("JdMtbsMq2jqJdQZD9AHC");
-Laposta::setApiKey("yuiB1TUFegFAQEAxjG0F");
+Laposta::setApiKey("JdMtbsMq2jqJdQZD9AHC");
 
 // includes for form (you might want to namespace these classes)
 require_once('./inc/Form.php');
@@ -14,8 +13,7 @@ require_once('./inc/lang.php');
 $form = new Form(array(
 
 	// set the id of the list to be used
-	//'list_id' => 'BaImMu3JZA',
-	'list_id' => 'dqqu0eijzs',
+	'list_id' => 'vke1fm1bd5',
 
 	// language from lang.php
 	'lang' => $lang
