@@ -40,11 +40,17 @@ class Laposta_List extends Laposta_Resource {
 		);
 	}
 
+	public function bulk($list_id, $data, $endpoint_2 = '', $endpoint_3 = '') {
+
+		return parent::connect(array(
+			'path' => array($list_id, $endpoint_2, $endpoint_3),
+			'post' => $data,
+			Laposta_Request::OPTION_IS_JSON_POST => true,
+		));
+	}
+
 	public function all() {
 
 		return parent::connect();
 	}
-
-
 }
-?>

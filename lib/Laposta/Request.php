@@ -1,14 +1,18 @@
 <?php
 Class Laposta_Request {
 
+	const OPTION_IS_JSON_POST = 'is_json_post';
+
 	public static function connect($data) {
+
+		$isJsonPost = isset($data[Laposta_Request::OPTION_IS_JSON_POST]) && $data[Laposta_Request::OPTION_IS_JSON_POST] === true;
 
 		// result from server
 		$response = Laposta_Util::connect(array(
 			'url' => $data['url'], 
-			'headers' => self::getHeaders(), 
+			'headers' => self::getHeaders($isJsonPost),
 			'api_key' => Laposta::getApiKey(), 
-			'post' => $data['post'], 
+			'post' => $data['post'],
 			'method' => $data['method'],
 			'httpsDisableVerifyPeer' => Laposta::getHttpsDisableVerifyPeer()
 		));
@@ -29,7 +33,7 @@ Class Laposta_Request {
 		return $result;
 	}
 
-	private static function getHeaders() {
+	private static function getHeaders($isJsonPost = false) {
 
 		$ua = array(
 			'bindings_version' => Laposta::VERSION,
@@ -42,6 +46,10 @@ Class Laposta_Request {
 			'X-Laposta-Client-User-Agent: ' . json_encode($ua), 
 			'User-Agent: laposta-php-' . Laposta::VERSION
 		);
+
+		if ($isJsonPost) {
+			$headers[] = 'Content-Type:application/json';
+		}
 
 		return $headers;
 	}

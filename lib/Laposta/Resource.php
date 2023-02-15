@@ -1,6 +1,10 @@
 <?php
 class Laposta_Resource {
 
+	const BULK_MODE_ADD = 'add';
+	const BULK_MODE_ADD_AND_EDIT = 'add_and_edit';
+	const BULK_MODE_EDIT = 'edit';
+
 	protected $result;
 	private $classname;
 
@@ -16,6 +20,7 @@ class Laposta_Resource {
 		$parameters = isset($data['parameters']) ? (is_array($data['parameters']) ? $data['parameters'] : array()) : array();
 		$post = isset($data['post']) ? (is_array($data['post']) ? $data['post'] : array()) : null;
 		$method = isset($data['method']) ? $data['method'] : null;
+		$isJsonPost = isset($data[Laposta_Request::OPTION_IS_JSON_POST]) && $data[Laposta_Request::OPTION_IS_JSON_POST] === true;
 
 		// start with base url
 		$url = $this->formatBaseUrl();
@@ -33,16 +38,23 @@ class Laposta_Resource {
 		// build query for post
 		if (is_array($post)) {
 
-			if ($post) $post = http_build_query($post);
-			else $post = true; // empty post
+			if ($post && !$isJsonPost) {
+				$post = http_build_query($post);
+			} elseif ($isJsonPost) {
+				// also json encode empty value
+				$post = json_encode($post);
+			} else {
+				// empty post
+				$post = true;
+			}
 		}
 
 		return Laposta_Request::connect(array(
-			'url' => $url, 
+			'url' => $url,
 			'post' => $post,
-			'method' => $method
-			)
-		);
+			'method' => $method,
+			Laposta_Request::OPTION_IS_JSON_POST => $isJsonPost,
+		));
 	}
 
 	private function formatBaseUrl() {

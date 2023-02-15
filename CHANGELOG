@@ -1,3 +1,7 @@
+=== 1.7 2022-02-15
+
+* Added support for list/{list_id}/members bulk changes and set the minimum php version from 5.2 to 5.6
+
 === 1.6 2020-02-23
 
 * Added support for results
