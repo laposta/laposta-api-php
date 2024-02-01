@@ -1,11 +1,12 @@
 <?php
 // Tested on PHP 5.2, 5.3, 5.4, 5.5, 5.6
 
-if (!function_exists('curl_init')) {
+// Note WP has wp_remote* functions, in most cases they will handle all this
+if ( !function_exists( 'curl_init' ) ) {
 	throw new Exception('Laposta needs the CURL PHP extension.');
 }
 
-if (!function_exists('json_decode')) {
+if ( !function_exists( 'json_decode' ) ) {
 	throw new Exception('Laposta needs the JSON PHP extension.');
 }
 
@@ -58,4 +59,3 @@ require(dirname(__FILE__) . '/Laposta/Campaign.php');
 require(dirname(__FILE__) . '/Laposta/Report.php');
 require(dirname(__FILE__) . '/Laposta/Webhook.php');
 require(dirname(__FILE__) . '/Laposta/Login.php');
-?>
