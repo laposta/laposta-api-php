@@ -34,7 +34,7 @@ If you're getting errors about certificate problems, you do this:
 ```php
 Laposta::setHttpsDisableVerifyPeer(true);
 ```
-Note: this gets rid of the errors, but can introduce security issues that SSL is designed to protect against. A better solution is to install the CA's certs: https://stackoverflow.com/questions/6400300
+Note: this gets rid of the errors, but *will* introduce severe security issues that TLS is designed to protect against. A far better solution is move hosting provider or to install the CA's certs: https://stackoverflow.com/questions/6400300
 
 # Documentation
 Please see https://api.laposta.nl/doc for up-to-date documentation.
