@@ -57,5 +57,6 @@ require(dirname(__FILE__) . '/Laposta/Field.php');
 require(dirname(__FILE__) . '/Laposta/Campaign.php');
 require(dirname(__FILE__) . '/Laposta/Report.php');
 require(dirname(__FILE__) . '/Laposta/Webhook.php');
+require(dirname(__FILE__) . '/Laposta/Segment.php');
 require(dirname(__FILE__) . '/Laposta/Login.php');
 ?>
