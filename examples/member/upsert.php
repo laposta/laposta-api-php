@@ -1,9 +1,9 @@
 <?php
 require_once('../../lib/Laposta.php');
-Laposta::setApiKey('TrbeCSZ6KRs4zwB27ZCg');
+Laposta::setApiKey("JdMtbsMq2jqJdQZD9AHC");
 
 // initialize member with list_id
-$member = new Laposta_Member("shb5vujyxj");
+$member = new Laposta_Member("BaImMu3JZA");
 
 try {
 	// upsert
