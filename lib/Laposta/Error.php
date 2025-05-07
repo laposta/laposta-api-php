@@ -1,6 +1,10 @@
 <?php
 class Laposta_Error extends Exception {
 
+	public $http_status;
+	public $http_body;
+	public $json_body;
+
 	public function __construct($message=null, $http_status=null, $http_body=null, $json_body=null) {
 
 		parent::__construct($message);
