@@ -31,8 +31,8 @@ require_once("/path/to/laposta-api-php/standalone/autoload.php");
 ## Quick Example ##
 
 ```php
-$client = new LapostaApi\Laposta('your_api_key');
-$member = $client->memberApi()->create($listId, ['email' => 'test@example.com', 'ip' => '123.123.123.123']);
+$laposta = new LapostaApi\Laposta('your_api_key');
+$member = $laposta->memberApi()->create($listId, ['email' => 'test@example.com', 'ip' => '123.123.123.123']);
 ```
 
 ## Examples
@@ -47,7 +47,7 @@ This library is built around PHP standards (PSR-18/17) and is designed to be fle
 You can inject your own HTTP client and factories (e.g. Guzzle, Nyholm, Symfony components) via the constructor:
 
 ```php
-$client = new LapostaApi\Laposta(
+$laposta = new LapostaApi\Laposta(
     'your_api_key',
     httpClient: new \GuzzleHttp\Client(), // implements PSR-18
     requestFactory: ...,
