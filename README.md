@@ -25,7 +25,7 @@ composer require laposta/laposta-api-php
 If you're not using Composer, include the autoloader:
 
 ```php
-require_once("/path/to/laposta-api-php/autoload.php");
+require_once("/path/to/laposta-api-php/standalone/autoload.php");
 ```
 
 ## Quick Example ##
