@@ -1,0 +1,5 @@
+/.github/ export-ignore
+/examples/ export-ignore
+/standalone/ export-ignore
+/tests/ export-ignore
+phpunit.xml export-ignore

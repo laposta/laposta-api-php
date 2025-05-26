@@ -1,0 +1,18 @@
+# IDEs
+.idea/
+
+# OS-related
+.DS_Store
+Thumbs.db
+
+# Composer
+/vendor/
+composer.lock
+
+# PHPUnit / Test output
+.phpunit.result.cache
+/tests/.env
+/build/
+
+# Example config (user-specific secrets)
+examples/config.php

@@ -1,0 +1,12 @@
+{
+  "pre-commit": {
+    "enabled": true,
+    "actions": [
+      {
+        "action": "composer run cs",
+        "options": [],
+        "conditions": []
+      }
+    ]
+  }
+}

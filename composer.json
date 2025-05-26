@@ -1,0 +1,59 @@
+{
+    "name": "laposta/laposta-api-php",
+    "type": "library",
+    "description": "Laposta api, free api to laposta.nl",
+    "keywords": ["email", "marketing", "newsletter", "api", "email-marketing"],
+    "homepage": "https://laposta.nl",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Stijn van der Ree",
+            "email": "stijn@laposta.nl"
+        },
+        {
+            "name": "Roel Bousardt",
+            "email": "r.bousardt@laposta.nl"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.1",
+        "psr/http-message": "^2.0"
+    },
+    "require-dev": {
+        "captainhook/captainhook": "^5.25",
+        "guzzlehttp/guzzle": "^7.4",
+        "phpunit/phpunit": "^10.5",
+        "squizlabs/php_codesniffer": "^3.13",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "LapostaApi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LapostaApi\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "cs": "vendor/bin/phpcs --standard=PSR12 examples/ src/ tests/ standalone/autoload.php",
+        "cs:fix": "vendor/bin/phpcbf --standard=PSR12 examples/ src/ tests/ standalone/autoload.php",
+        "post-install-cmd": [
+            "CaptainHook\\Composer\\Plugin::installHooks"
+        ],
+        "post-update-cmd": [
+            "CaptainHook\\Composer\\Plugin::installHooks"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

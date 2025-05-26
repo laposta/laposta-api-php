@@ -1,0 +1,43 @@
+name: Run Tests
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+    workflow_dispatch:
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Set up PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.1'
+                  extensions: curl, json
+                  coverage: xdebug
+
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-progress
+
+            - name: Run PHP CodeSniffer
+              run: vendor/bin/phpcs --standard=PSR12 src/
+
+            - name: Write test .env file
+              run: echo "${{ secrets.TEST_ENV }}" > tests/.env
+
+            - name: Run tests with coverage
+              run: composer test -- --coverage-clover=build/coverage/clover.xml
+              env:
+                  XDEBUG_MODE: coverage
+
+            - name: Upload coverage to Codecov
+              uses: codecov/codecov-action@v4
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  files: build/coverage/clover.xml
