@@ -26,9 +26,8 @@ class Request extends Message implements RequestInterface
         array $headers = [],
         protected ?string $requestTarget = null,
     ) {
-        $method = strtoupper($method);
-        $this->validateMethod($method);
         $this->method = strtoupper($method);
+        $this->validateMethod($this->method);
 
         // Set and normalize headers
         $normalizedHeaders = [];

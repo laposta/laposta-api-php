@@ -29,10 +29,10 @@ class ResponseTest extends TestCase
 
     public function testStandardReasonPhraseForKnownStatusCodes(): void
     {
-        $response = new Response(403);
+        $response = new Response(401);
 
-        $this->assertEquals(403, $response->getStatusCode());
-        $this->assertEquals('Forbidden', $response->getReasonPhrase());
+        $this->assertEquals(401, $response->getStatusCode());
+        $this->assertEquals('Unauthorized', $response->getReasonPhrase());
     }
 
     public function testUnknownStatusCodeReasonPhrase(): void
@@ -57,15 +57,23 @@ class ResponseTest extends TestCase
         $this->assertEquals('OK', $response->getReasonPhrase());
     }
 
-    /**
-     * @covers \LapostaApi\Http\Response::getDefaultReasonPhrase
-     */
     public function testWithStatusDefaultsToStandardReasonPhrase(): void
     {
-        $response = new Response(200);
-        $newResponse = $response->withStatus(500);
+        $response = new Response();
 
-        $this->assertEquals(500, $newResponse->getStatusCode());
-        $this->assertEquals('Internal Server Error', $newResponse->getReasonPhrase());
+        // Test a range of known HTTP status codes
+        $knownCodes = [200, 201, 400, 401, 402, 404, 429, 500];
+
+        foreach ($knownCodes as $code) {
+            $newResponse = $response->withStatus($code);
+            $this->assertEquals($code, $newResponse->getStatusCode());
+            $this->assertNotEmpty($newResponse->getReasonPhrase());
+            $this->assertIsString($newResponse->getReasonPhrase());
+        }
+
+        // Test unknown code
+        $unknownResponse = $response->withStatus(999);
+        $this->assertEquals(999, $unknownResponse->getStatusCode());
+        $this->assertEquals('', $unknownResponse->getReasonPhrase());
     }
 }

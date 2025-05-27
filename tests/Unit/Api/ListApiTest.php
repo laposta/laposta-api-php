@@ -154,7 +154,7 @@ class ListApiTest extends BaseTestCase
         );
     }
 
-    public function testBulkOperation(): void
+    public function testAddOrUpdateMembers(): void
     {
         $listId = 'list123';
         $bulkData = [

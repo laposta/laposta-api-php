@@ -25,11 +25,17 @@ class Response extends Message implements ResponseInterface
         $this->reasonPhrase = $reasonPhrase ?: $this->getDefaultReasonPhrase($statusCode);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getStatusCode(): int
     {
         return $this->statusCode;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function withStatus(int $code, string $reasonPhrase = ''): ResponseInterface
     {
         $new = clone $this;
@@ -38,6 +44,9 @@ class Response extends Message implements ResponseInterface
         return $new;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getReasonPhrase(): string
     {
         return $this->reasonPhrase;
@@ -50,11 +59,10 @@ class Response extends Message implements ResponseInterface
             201 => 'Created',
             400 => 'Bad Request',
             401 => 'Unauthorized',
-            403 => 'Forbidden',
+            402 => 'Request Failed',
             404 => 'Not Found',
+            429 => 'Too Many Requests',
             500 => 'Internal Server Error',
-            502 => 'Bad Gateway',
-            503 => 'Service Unavailable',
             default => '',
         };
     }

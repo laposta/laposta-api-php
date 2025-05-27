@@ -18,6 +18,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
@@ -34,6 +35,9 @@ final class BaseApiTest extends TestCase
     /** @var ClientInterface&MockObject */
     private ClientInterface $httpClient;
 
+    /** @var StreamFactoryInterface */
+    private StreamFactoryInterface $streamFactory;
+
     /** @var StreamInterface */
     private StreamInterface $stream;
 
@@ -47,7 +51,8 @@ final class BaseApiTest extends TestCase
     {
         // Mock Laposta and dependencies
         $this->httpClient = $this->createMock(ClientInterface::class);
-        $this->stream = (new StreamFactory())->createStream();
+        $this->streamFactory = new StreamFactory();
+        $this->stream = $this->streamFactory->createStream();
         $this->requestFactory = $this->createMock(RequestFactoryInterface::class);
         $this->uriFactory = $this->createMock(UriFactoryInterface::class);
 
@@ -61,11 +66,12 @@ final class BaseApiTest extends TestCase
         $this->laposta->method('getHttpClient')->willReturn($this->httpClient);
         $this->laposta->method('getRequestFactory')->willReturn($this->requestFactory);
         $this->laposta->method('getUriFactory')->willReturn($this->uriFactory);
+        $this->laposta->method('getStreamFactory')->willReturn($this->streamFactory);
 
         // Create concrete implementation of BaseApi for testing purposes
         $this->baseApi = $this->getMockBuilder(BaseApi::class)
-                              ->setConstructorArgs([$this->laposta])
-                              ->getMock();
+            ->setConstructorArgs([$this->laposta])
+            ->getMock();
     }
 
     public function testGetResource(): void
@@ -307,6 +313,34 @@ final class BaseApiTest extends TestCase
         $method->invoke($this->baseApi, $request, $response);
     }
 
+    public function testHandleResponseWithInvalidJsonForHttpError(): void
+    {
+        // Mock request
+        $request = $this->createMock(RequestInterface::class);
+
+        // Create stream with invalid JSON
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->method('__toString')->willReturn('This is not valid JSON');
+
+        // Mock response with error code (4xx) and invalid JSON body
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getStatusCode')->willReturn(400);
+        $response->method('getBody')->willReturn($stream);
+
+        // Get access to protected handleResponse method
+        $method = new ReflectionMethod(BaseApi::class, 'handleResponse');
+        $method->setAccessible(true);
+
+        // Test that ApiException is thrown with correct error message
+        try {
+            $method->invoke($this->baseApi, $request, $response);
+            $this->fail('An ApiException should be thrown');
+        } catch (ApiException $e) {
+            // Verify that error message contains raw body
+            $this->assertStringContainsString('This is not valid JSON', $e->getMessage());
+        }
+    }
+
     public function testHandleResponseFailsWithInvalidJson(): void
     {
         // Mock response with successful status but invalid JSON
@@ -337,45 +371,45 @@ final class BaseApiTest extends TestCase
 
         // Create mock object of BaseApi
         $baseApiMock = $this->getMockBuilder(BaseApi::class)
-                            ->disableOriginalConstructor()
-                            ->onlyMethods(['buildUri', 'createRequest', 'dispatchRequest', 'handleResponse'])
-                            ->getMock();
+            ->disableOriginalConstructor()
+            ->onlyMethods(['buildUri', 'createRequest', 'dispatchRequest', 'handleResponse'])
+            ->getMock();
 
         // Expectation for buildUri
         $baseApiMock->expects($this->once())
-                    ->method('buildUri')
-                    ->with(['segment'], ['param' => 'value'])
-                    ->willReturnCallback(function () use (&$calledMethods) {
-                        $calledMethods[] = 'buildUri';
-                        return $this->createMock(UriInterface::class);
-                    });
+            ->method('buildUri')
+            ->with(['segment'], ['param' => 'value'])
+            ->willReturnCallback(function () use (&$calledMethods) {
+                $calledMethods[] = 'buildUri';
+                return $this->createMock(UriInterface::class);
+            });
 
         // Expectation for createRequest
         $baseApiMock->expects($this->once())
-                    ->method('createRequest')
-                    ->with('GET', $this->isType('string'), null, $this->isInstanceOf(ContentType::class))
-                    ->willReturnCallback(function () use (&$calledMethods) {
-                        $calledMethods[] = 'createRequest';
-                        return $this->createMock(RequestInterface::class);
-                    });
+            ->method('createRequest')
+            ->with('GET', $this->isType('string'), null, $this->isInstanceOf(ContentType::class))
+            ->willReturnCallback(function () use (&$calledMethods) {
+                $calledMethods[] = 'createRequest';
+                return $this->createMock(RequestInterface::class);
+            });
 
         // Expectation for dispatchRequest
         $baseApiMock->expects($this->once())
-                    ->method('dispatchRequest')
-                    ->with($this->isInstanceOf(RequestInterface::class))
-                    ->willReturnCallback(function () use (&$calledMethods) {
-                        $calledMethods[] = 'dispatchRequest';
-                        return $this->createMock(ResponseInterface::class);
-                    });
+            ->method('dispatchRequest')
+            ->with($this->isInstanceOf(RequestInterface::class))
+            ->willReturnCallback(function () use (&$calledMethods) {
+                $calledMethods[] = 'dispatchRequest';
+                return $this->createMock(ResponseInterface::class);
+            });
 
         // Expectation for handleResponse
         $baseApiMock->expects($this->once())
-                    ->method('handleResponse')
-                    ->with($this->isInstanceOf(RequestInterface::class), $this->isInstanceOf(ResponseInterface::class))
-                    ->willReturnCallback(function () use (&$calledMethods) {
-                        $calledMethods[] = 'handleResponse';
-                        return ['success' => true];
-                    });
+            ->method('handleResponse')
+            ->with($this->isInstanceOf(RequestInterface::class), $this->isInstanceOf(ResponseInterface::class))
+            ->willReturnCallback(function () use (&$calledMethods) {
+                $calledMethods[] = 'handleResponse';
+                return ['success' => true];
+            });
 
         // Get access to sendRequest method
         $method = new ReflectionMethod(BaseApi::class, 'sendRequest');

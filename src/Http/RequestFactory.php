@@ -12,20 +12,20 @@ use Psr\Http\Message\UriInterface;
 
 class RequestFactory implements RequestFactoryInterface
 {
+    /**
+     * Creates a new RequestFactory instance.
+     *
+     * @param StreamFactoryInterface $streamFactory Factory to create request streams
+     * @param UriFactoryInterface $uriFactory Factory to create URIs
+     */
     public function __construct(
         protected StreamFactoryInterface $streamFactory = new StreamFactory(),
         protected UriFactoryInterface $uriFactory = new UriFactory(),
     ) {
     }
 
-
     /**
-     * Create a new HTTP request with optional extra headers.
-     *
-     * @param string $method The HTTP method (e.g., 'GET', 'POST').
-     * @param UriInterface|string $uri The URI for the request as a string or UriInterface.
-     *
-     * @return RequestInterface
+     * {@inheritDoc}
      */
     public function createRequest(string $method, $uri): RequestInterface
     {

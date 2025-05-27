@@ -149,7 +149,7 @@ class FieldApiIntegrationTest extends BaseIntegrationTestCase
         $fieldData = $this->createFieldData('select_field', [
             'datatype' => 'select_single',
             'datatype_display' => 'select',
-            'options' => ['Optie 1', 'Optie 2', 'Optie 3'],
+            'options' => ['Option 1', 'Option 2', 'Option 3'],
         ]);
 
         $response = $this->laposta->fieldApi()->create(self::$listIdForTests, $fieldData);

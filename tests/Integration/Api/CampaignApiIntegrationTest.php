@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LapostaApi\Tests\Integration\Api;
 
 use LapostaApi\Exception\ApiException;
+use LapostaApi\Laposta;
 use LapostaApi\Tests\Integration\BaseIntegrationTestCase;
 
 class CampaignApiIntegrationTest extends BaseIntegrationTestCase
@@ -36,11 +37,11 @@ class CampaignApiIntegrationTest extends BaseIntegrationTestCase
     }
 
     /**
-     * Maakt data voor een nieuwe campagne met de juiste parameters
+     * Creates data for a new campaign with the right parameters
      *
-     * @param array $customData Aangepaste data om de standaardwaarden te overschrijven
+     * @param array $customData Custom data to override the default values
      *
-     * @return array Data voor het aanmaken van een campagne
+     * @return array Data for creating a campaign
      */
     protected function createCampaignData(array $customData = []): array
     {
@@ -56,6 +57,34 @@ class CampaignApiIntegrationTest extends BaseIntegrationTestCase
         ];
 
         return array_merge($defaultData, $customData);
+    }
+
+    /**
+     * Helper method to create a campaign with content for testing actions
+     *
+     * @return string The ID of the created campaign
+     */
+    protected function createCampaignWithContent(): string
+    {
+        // Create a campaign
+        $campaignName = 'Content Test Campaign - ' . $this->generateRandomString();
+        $createData = $this->createCampaignData([
+            'name' => $campaignName,
+            'subject' => 'laposta-api-php - ' . Laposta::VERSION . ' - ' . date('Y-m-d H:i:s'),
+        ]);
+
+        $createdCampaign = $this->laposta->campaignApi()->create($createData);
+        $campaignId = $createdCampaign['campaign']['campaign_id'];
+
+        // Add content to the campaign
+        $contentData = [
+            'html' => '<html lang="en"><body><h1>Test Content</h1>'
+                . '<p>This is a test email for integration testing.</p></body></html>',
+        ];
+
+        $this->laposta->campaignApi()->updateContent($campaignId, $contentData);
+
+        return $campaignId;
     }
 
     public function testCreateCampaign(): void
@@ -157,7 +186,7 @@ class CampaignApiIntegrationTest extends BaseIntegrationTestCase
         ]);
 
         $createdCampaignResponse = $this->laposta->campaignApi()->create($createData);
-        $createdCampaignIdForThisTest = $createdCampaignResponse['campaign']['campaign_id'];
+        $this->createdCampaignId = $createdCampaignResponse['campaign']['campaign_id'];
 
         $response = $this->laposta->campaignApi()->all();
 
@@ -168,18 +197,89 @@ class CampaignApiIntegrationTest extends BaseIntegrationTestCase
         $found = false;
         foreach ($response['data'] as $campaignEntry) {
             $this->assertArrayHasKey('campaign', $campaignEntry);
-            if ($campaignEntry['campaign']['campaign_id'] === $createdCampaignIdForThisTest) {
+            if ($campaignEntry['campaign']['campaign_id'] === $this->createdCampaignId) {
                 $found = true;
                 break;
             }
         }
         $this->assertTrue($found, 'Created campaign not found in all campaigns response.');
+    }
 
-        // Ruim de campagne op die specifiek voor deze test is gemaakt
-        try {
-            $this->laposta->campaignApi()->delete($createdCampaignIdForThisTest);
-        } catch (ApiException $e) {
-            fwrite(STDERR, "Cleanup error (campaign): " . $e->getMessage() . "\n");
-        }
+    public function testGetAndUpdateContent(): void
+    {
+        // Create a campaign
+        $campaignName = 'Content Test Campaign - ' . $this->generateRandomString();
+        $createData = $this->createCampaignData([
+            'name' => $campaignName,
+            'subject' => 'Content Test Subject',
+        ]);
+
+        $createdCampaign = $this->laposta->campaignApi()->create($createData);
+        $this->createdCampaignId = $createdCampaign['campaign']['campaign_id'];
+
+        // Add content to the campaign and verify it
+        $contentData = [
+            'html' => '<html lang="en"><body><h1>Test Content</h1><p>This is a test email.</p></body></html>',
+            'text' => 'Test Content\n\nThis is a test email.',
+        ];
+        $response = $this->laposta->campaignApi()->updateContent($this->createdCampaignId, $contentData);
+
+        $this->assertArrayHasKey('campaign', $response);
+        $campaignData = $response['campaign'];
+        $this->assertArrayHasKey('plaintext', $campaignData);
+        $this->assertArrayHasKey('html', $campaignData);
+        $this->assertStringContainsString('<h1>Test Content</h1>', $campaignData['html']);
+
+        // Get the content and verify it
+        $response = $this->laposta->campaignApi()->getContent($this->createdCampaignId);
+
+        $this->assertArrayHasKey('campaign', $response);
+        $campaignData = $response['campaign'];
+        $this->assertArrayHasKey('plaintext', $campaignData);
+        $this->assertArrayHasKey('html', $campaignData);
+        $this->assertStringContainsString('<h1>Test Content</h1>', $campaignData['html']);
+    }
+
+    public function testSendTestMail(): void
+    {
+        $this->createdCampaignId = $this->createCampaignWithContent();
+
+        // Send test mail
+        $response = $this->laposta->campaignApi()->sendTestMail($this->createdCampaignId, $this->approvedSenderAddress);
+
+        $this->assertArrayHasKey('campaign', $response);
+        $this->assertEquals($this->createdCampaignId, $response['campaign']['campaign_id']);
+    }
+
+    public function testScheduleCampaign(): void
+    {
+        $this->createdCampaignId = $this->createCampaignWithContent();
+
+        // Schedule campaign for future delivery
+        $tomorrow = date('Y-m-d H:i:s', strtotime('+1 day'));
+        $response = $this->laposta->campaignApi()->schedule($this->createdCampaignId, $tomorrow);
+
+        $this->assertArrayHasKey('campaign', $response);
+        $campaignData = $response['campaign'];
+        $this->assertEquals($this->createdCampaignId, $campaignData['campaign_id']);
+
+        // Check if delivery_requested is set
+        $this->assertArrayHasKey('delivery_requested', $campaignData);
+        $this->assertSame($tomorrow, $campaignData['delivery_requested']);
+    }
+
+    public function testSendCampaign(): void
+    {
+        $this->createdCampaignId = $this->createCampaignWithContent();
+
+        // Send the campaign directly
+        $response = $this->laposta->campaignApi()->send($this->createdCampaignId);
+
+        $this->assertArrayHasKey('campaign', $response);
+        $campaignData = $response['campaign'];
+        $this->assertEquals($this->createdCampaignId, $campaignData['campaign_id']);
+
+        // Status should be 'sending' or 'sent'
+        $this->assertNotEmpty($campaignData['delivery_requested']);
     }
 }
