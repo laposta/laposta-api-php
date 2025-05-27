@@ -1,8 +1,12 @@
 # Laposta API PHP
 
-A PHP library for interacting with the Laposta API, compatible with PSR-18 and PSR-17 standards.
+[![Build](https://github.com/laposta/laposta-api-php/actions/workflows/tests.yml/badge.svg)](https://github.com/laposta/laposta-api-php/actions)
+[![Coverage](https://codecov.io/gh/laposta/laposta-api-php/branch/main/graph/badge.svg)](https://codecov.io/gh/laposta/laposta-api-php)
+[![Packagist Version](https://img.shields.io/packagist/v/laposta/laposta-api-php)](https://packagist.org/packages/laposta/laposta-api-php)
+[![PHP Version](https://img.shields.io/packagist/php-v/laposta/laposta-api-php)](https://packagist.org/packages/laposta/laposta-api-php)
+[![License](https://img.shields.io/github/license/laposta/laposta-api-php)](https://github.com/laposta/laposta-api-php/blob/main/LICENSE)
 
-[![codecov](https://codecov.io/gh/laposta/laposta-api-php/branch/main/graph/badge.svg)](https://codecov.io/gh/laposta/laposta-api-php)
+A PHP library for interacting with the Laposta API, compatible with PSR-18 and PSR-17 standards.
 
 ## Requirements ##
 
