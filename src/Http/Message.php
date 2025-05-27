@@ -25,9 +25,7 @@ abstract class Message implements MessageInterface
     protected StreamInterface $body;
 
     /**
-     * Retrieve the HTTP protocol version.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getProtocolVersion(): string
     {
@@ -35,11 +33,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Return a new message with the specified protocol version.
-     *
-     * @param string $version
-     *
-     * @return MessageInterface
+     * {@inheritDoc}
      */
     public function withProtocolVersion(string $version): MessageInterface
     {
@@ -49,9 +43,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Retrieve all headers.
-     *
-     * @return array<string, array<string>>
+     * {@inheritDoc}
      */
     public function getHeaders(): array
     {
@@ -59,11 +51,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Check if a specific header exists.
-     *
-     * @param string $name
-     *
-     * @return bool
+     * {@inheritDoc}
      */
     public function hasHeader(string $name): bool
     {
@@ -72,11 +60,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Retrieve a specific header in array format.
-     *
-     * @param string $name
-     *
-     * @return string[]
+     * {@inheritDoc}
      */
     public function getHeader(string $name): array
     {
@@ -85,11 +69,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Retrieve a specific header as a single string (comma-separated).
-     *
-     * @param string $name
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getHeaderLine(string $name): string
     {
@@ -101,35 +81,25 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Return a new message with the specified header (old values are overwritten).
-     *
-     * @param string $name
-     * @param string|string[] $value
-     *
-     * @return MessageInterface
+     * {@inheritDoc}
      */
     public function withHeader(string $name, $value): MessageInterface
     {
-        $this->validateHeader($name, $value); // Validate the header name and value
+        $this->validateHeader($name, $value);
         $new = clone $this;
-        $normalized = $this->normalizeHeaderName($name); // Normalize the header name
-        $new->headers[$normalized] = (array)$value; // Store as an array
+        $normalized = $this->normalizeHeaderName($name);
+        $new->headers[$normalized] = (array)$value;
         return $new;
     }
 
     /**
-     * Return a new message with an added header (existing values are preserved).
-     *
-     * @param string $name
-     * @param string|string[] $value
-     *
-     * @return MessageInterface
+     * {@inheritDoc}
      */
     public function withAddedHeader(string $name, $value): MessageInterface
     {
-        $this->validateHeader($name, $value); // Validate the header name and value
+        $this->validateHeader($name, $value);
         $new = clone $this;
-        $normalized = $this->normalizeHeaderName($name); // Normalize the header name
+        $normalized = $this->normalizeHeaderName($name);
         if (!isset($new->headers[$normalized])) {
             $new->headers[$normalized] = [];
         }
@@ -138,24 +108,18 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Return a new message with a removed header.
-     *
-     * @param string $name
-     *
-     * @return MessageInterface
+     * {@inheritDoc}
      */
     public function withoutHeader(string $name): MessageInterface
     {
-        $normalized = $this->normalizeHeaderName($name); // Normalize the header name
+        $normalized = $this->normalizeHeaderName($name);
         $new = clone $this;
         unset($new->headers[$normalized]);
         return $new;
     }
 
     /**
-     * Retrieve the body.
-     *
-     * @return StreamInterface
+     * {@inheritDoc}
      */
     public function getBody(): StreamInterface
     {
@@ -163,11 +127,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Return a new message with a new body object.
-     *
-     * @param StreamInterface $body
-     *
-     * @return MessageInterface
+     * {@inheritDoc}
      */
     public function withBody(StreamInterface $body): MessageInterface
     {

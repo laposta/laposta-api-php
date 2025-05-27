@@ -18,27 +18,15 @@ use RuntimeException;
 class StreamFactory implements StreamFactoryInterface
 {
     /**
-     * Stream adapter used for creating stream resources
+     * Creates a new StreamFactory instance.
      */
-    private StreamAdapter $adapter;
-
-    /**
-     * Constructor
-     *
-     * @param StreamAdapter|null $adapter Optional stream adapter, creates new one if not provided
-     */
-    public function __construct(?StreamAdapter $adapter = null)
-    {
-        $this->adapter = $adapter ?? new StreamAdapter();
+    public function __construct(
+        protected StreamAdapter $adapter = new StreamAdapter()
+    ) {
     }
 
     /**
-     * Create a new stream with the given content
-     *
-     * @param string $content String content to be used as stream content
-     *
-     * @return StreamInterface A stream containing the specified content
-     * @throws RuntimeException If the temporary stream cannot be created
+     * {@inheritDoc}
      */
     public function createStream(string $content = ''): StreamInterface
     {
@@ -58,13 +46,7 @@ class StreamFactory implements StreamFactoryInterface
     }
 
     /**
-     * Create a stream from a file - NOT IMPLEMENTED
-     *
-     * @param string $filename Path to file
-     * @param string $mode Mode used to open the file
-     *
-     * @return StreamInterface
-     * @throws RuntimeException This method is not implemented
+     * {@inheritDoc}
      */
     public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
     {
@@ -72,12 +54,7 @@ class StreamFactory implements StreamFactoryInterface
     }
 
     /**
-     * Create a new stream from an existing resource - NOT IMPLEMENTED
-     *
-     * @param resource $resource PHP resource to create stream from
-     *
-     * @return StreamInterface
-     * @throws RuntimeException This method is not implemented
+     * {@inheritDoc}
      */
     public function createStreamFromResource($resource): StreamInterface
     {

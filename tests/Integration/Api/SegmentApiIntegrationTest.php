@@ -30,7 +30,7 @@ class SegmentApiIntegrationTest extends BaseIntegrationTestCase
             try {
                 $this->laposta->segmentApi()->delete(self::$listIdForTests, $this->createdSegmentId);
             } catch (ApiException $e) {
-                // fwrite(STDERR, 'Cleanup error (segment): ' . $e->getMessage() . "\n");
+                 fwrite(STDERR, 'Cleanup error (segment): ' . $e->getMessage() . "\n");
             }
         }
         parent::tearDown();
@@ -65,12 +65,7 @@ class SegmentApiIntegrationTest extends BaseIntegrationTestCase
             'definition' => $this->createDefinition(),
         ];
 
-        try {
-            $response = $this->laposta->segmentApi()->create(self::$listIdForTests, $data);
-        } catch (ApiException $e) {
-            $a1 = $e->getResponseBody();
-            $a = 1;
-        }
+        $response = $this->laposta->segmentApi()->create(self::$listIdForTests, $data);
 
         $this->assertArrayHasKey('segment', $response);
         $this->assertArrayHasKey('segment_id', $response['segment']);

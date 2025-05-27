@@ -14,6 +14,14 @@ class Stream implements StreamInterface
 
     protected StreamAdapter $adapter;
 
+    /**
+     * Initialize a new stream instance.
+     *
+     * @param resource $stream The PHP stream resource
+     * @param StreamAdapter $adapter The adapter for stream operations
+     *
+     * @throws RuntimeException When $stream is not a valid resource
+     */
     public function __construct($stream, StreamAdapter $adapter)
     {
         $this->adapter = $adapter;
@@ -25,6 +33,9 @@ class Stream implements StreamInterface
         $this->stream = $stream;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function __toString(): string
     {
         if (!$this->isReadable() || !$this->isSeekable()) {
@@ -35,6 +46,9 @@ class Stream implements StreamInterface
         return $this->adapter->streamGetContents($this->stream) ?: '';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function close(): void
     {
         if (isset($this->stream)) {
@@ -43,6 +57,9 @@ class Stream implements StreamInterface
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function detach()
     {
         $result = $this->stream;
@@ -50,6 +67,9 @@ class Stream implements StreamInterface
         return $result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getSize(): ?int
     {
         if (!$this->stream) {
@@ -60,6 +80,9 @@ class Stream implements StreamInterface
         return $stats['size'] ?? null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function tell(): int
     {
         if (!$this->stream) {
@@ -75,17 +98,26 @@ class Stream implements StreamInterface
         return $result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function eof(): bool
     {
         return !$this->stream || $this->adapter->feof($this->stream);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function isSeekable(): bool
     {
         $meta = $this->getMetadata();
         return $meta['seekable'] ?? false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function seek($offset, $whence = SEEK_SET): void
     {
         if (!$this->isSeekable() || $this->adapter->fseek($this->stream, $offset, $whence) === -1) {
@@ -93,6 +125,9 @@ class Stream implements StreamInterface
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function rewind(): void
     {
         if (!$this->adapter->rewind($this->stream)) {
@@ -100,12 +135,18 @@ class Stream implements StreamInterface
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function isWritable(): bool
     {
         $mode = $this->getMetadata('mode');
         return is_string($mode) && (str_contains($mode, 'w') || str_contains($mode, 'a') || str_contains($mode, '+'));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function write($string): int
     {
         if (!$this->isWritable()) {
@@ -121,12 +162,18 @@ class Stream implements StreamInterface
         return $result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function isReadable(): bool
     {
         $mode = $this->getMetadata('mode');
         return is_string($mode) && (str_contains($mode, 'r') || str_contains($mode, '+'));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function read($length): string
     {
         if (!$this->isReadable()) {
@@ -141,6 +188,9 @@ class Stream implements StreamInterface
         return $result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getContents(): string
     {
         if (!$this->isReadable()) {
@@ -155,6 +205,9 @@ class Stream implements StreamInterface
         return $contents;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getMetadata($key = null): mixed
     {
         if (!$this->stream) {

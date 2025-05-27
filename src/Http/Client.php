@@ -210,7 +210,7 @@ class Client implements ClientInterface
      * @param int $status HTTP status code
      * @param string $rawHeaders Raw response headers
      * @param string $body Response body
-     *
+     * @param RequestInterface $request
      * @return ResponseInterface
      * @throws ClientException When response creation fails
      */

@@ -34,6 +34,24 @@ class ApiExceptionTest extends TestCase
     }
 
     /**
+     * Test if getRequest returns the correct request object
+     */
+    public function testGetRequest(): void
+    {
+        // Mock RequestInterface
+        $request = $this->createMock(RequestInterface::class);
+
+        // Mock ResponseInterface
+        $response = $this->createMock(ResponseInterface::class);
+
+        // Create ApiException
+        $exception = new ApiException('Test exception', $request, $response);
+
+        // Verify that the correct request object is returned
+        $this->assertSame($request, $exception->getRequest());
+    }
+
+    /**
      * Test if getHttpStatus returns the correct status code
      */
     public function testGetHttpStatus(): void
@@ -131,7 +149,7 @@ class ApiExceptionTest extends TestCase
 
         // Call getJsonResponse and check result
         $expectedJson = ['error' => 'Not found', 'code' => 404];
-        $this->assertEquals($expectedJson, $exception->getResponseJson());
+        $this->assertEquals($expectedJson, $exception->getResponseData());
     }
 
     /**
@@ -154,7 +172,7 @@ class ApiExceptionTest extends TestCase
         $exception = new ApiException('Invalid response', $request, $response);
 
         // Call getJsonResponse and check result (should be empty array)
-        $this->assertEquals([], $exception->getResponseJson());
+        $this->assertEquals([], $exception->getResponseData());
     }
 
     /**
@@ -177,7 +195,137 @@ class ApiExceptionTest extends TestCase
         $exception = new ApiException('Empty response', $request, $response);
 
         // Call getJsonResponse and check result (should be empty array)
-        $this->assertEquals([], $exception->getResponseJson());
+        $this->assertEquals([], $exception->getResponseData());
+    }
+
+    /**
+     * Test error detail getters with complete error data
+     */
+    public function testErrorDetailGettersWithCompleteData(): void
+    {
+        // Mock RequestInterface
+        $request = $this->createMock(RequestInterface::class);
+
+        // Mock StreamInterface with complete error data
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->method('__toString')->willReturn(json_encode([
+            'error' => [
+                'type' => 'invalid_input',
+                'code' => 400,
+                'parameter' => 'email',
+                'message' => 'Email address is invalid'
+            ]
+        ]));
+
+        // Mock ResponseInterface
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getBody')->willReturn($stream);
+
+        // Create ApiException
+        $exception = new ApiException('Validation error', $request, $response);
+
+        // Test each error detail getter
+        $this->assertEquals('invalid_input', $exception->getErrorType());
+        $this->assertEquals(400, $exception->getErrorCode());
+        $this->assertEquals('email', $exception->getErrorParameter());
+        $this->assertEquals('Email address is invalid', $exception->getErrorMessage());
+    }
+
+    /**
+     * Test error detail getters with partial error data
+     */
+    public function testErrorDetailGettersWithPartialData(): void
+    {
+        // Mock RequestInterface
+        $request = $this->createMock(RequestInterface::class);
+
+        // Mock StreamInterface with partial error data (missing parameter and code)
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->method('__toString')->willReturn(json_encode([
+            'error' => [
+                'type' => 'server_error',
+                'message' => 'Internal server error occurred'
+            ]
+        ]));
+
+        // Mock ResponseInterface
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getBody')->willReturn($stream);
+
+        // Create ApiException
+        $exception = new ApiException('Server error', $request, $response);
+
+        // Test each error detail getter
+        $this->assertEquals('server_error', $exception->getErrorType());
+        $this->assertNull($exception->getErrorCode()); // Should be null since it's missing
+        $this->assertNull($exception->getErrorParameter()); // Should be null since it's missing
+        $this->assertEquals('Internal server error occurred', $exception->getErrorMessage());
+    }
+
+    /**
+     * Test error detail getters with no error data
+     */
+    public function testErrorDetailGettersWithNoErrorData(): void
+    {
+        // Mock RequestInterface
+        $request = $this->createMock(RequestInterface::class);
+
+        // Mock StreamInterface with response that has no error field
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->method('__toString')->willReturn(json_encode([
+            'status' => 'error',
+            'message' => 'Something went wrong'
+        ]));
+
+        // Mock ResponseInterface
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getBody')->willReturn($stream);
+
+        // Create ApiException
+        $exception = new ApiException('General error', $request, $response);
+
+        // Test each error detail getter should return null
+        $this->assertNull($exception->getErrorType());
+        $this->assertNull($exception->getErrorCode());
+        $this->assertNull($exception->getErrorParameter());
+        $this->assertNull($exception->getErrorMessage());
+    }
+
+    /**
+     * Test if error details are included in __toString output
+     */
+    public function testToStringWithErrorDetails(): void
+    {
+        // Mock RequestInterface
+        $request = $this->createMock(RequestInterface::class);
+
+        // Mock StreamInterface with error details
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->method('__toString')->willReturn(json_encode([
+            'error' => [
+                'type' => 'rate_limit_exceeded',
+                'code' => 429,
+                'parameter' => 'request',
+                'message' => 'API rate limit exceeded'
+            ]
+        ]));
+
+        // Mock ResponseInterface
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getStatusCode')->willReturn(429);
+        $response->method('getBody')->willReturn($stream);
+
+        // Create ApiException
+        $exception = new ApiException('Rate limit exceeded', $request, $response);
+
+        // Convert to string and check content
+        $string = (string)$exception;
+
+        // String should contain all error details
+        $this->assertStringContainsString('Error Code: 429', $string);
+        $this->assertStringContainsString('Error Type: rate_limit_exceeded', $string);
+        $this->assertStringContainsString('Error Parameter: request', $string);
+        $this->assertStringContainsString('Error Message: API rate limit exceeded', $string);
     }
 
     /**

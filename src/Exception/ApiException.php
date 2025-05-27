@@ -81,7 +81,7 @@ class ApiException extends LapostaException
     /**
      * Returns the parsed JSON response (lazy loaded)
      */
-    public function getResponseJson(): array
+    public function getResponseData(): array
     {
         if ($this->responseJson === null) {
             $body = $this->getResponseBody();
@@ -100,12 +100,67 @@ class ApiException extends LapostaException
     }
 
     /**
+     * Returns the error type if available
+     */
+    public function getErrorType(): ?string
+    {
+        return $this->getResponseData()['error']['type'] ?? null;
+    }
+
+    /**
+     * Returns the error code if available
+     */
+    public function getErrorCode(): ?int
+    {
+        $code = $this->getResponseData()['error']['code'] ?? null;
+        return $code !== null ? (int)$code : null;
+    }
+
+    /**
+     * Returns the error parameter if available
+     */
+    public function getErrorParameter(): ?string
+    {
+        return $this->getResponseData()['error']['parameter'] ?? null;
+    }
+
+    /**
+     * Returns the error message if available
+     */
+    public function getErrorMessage(): ?string
+    {
+        return $this->getResponseData()['error']['message'] ?? null;
+    }
+
+
+    /**
      * Returns a readable representation of the exception
      */
     public function __toString(): string
     {
         $str = parent::__toString();
         $str .= "\nHTTP Status: " . $this->getHttpStatus();
+
+        $errorCode = $this->getErrorCode();
+        if ($errorCode !== null) {
+            $str .= "\nError Code: " . $errorCode;
+        }
+
+        $errorType = $this->getErrorType();
+        if ($errorType !== null) {
+            $str .= "\nError Type: " . $errorType;
+        }
+
+        $errorParameter = $this->getErrorParameter();
+        if ($errorParameter !== null) {
+            $str .= "\nError Parameter: " . $errorParameter;
+        }
+
+        $errorMessage = $this->getErrorMessage();
+        if ($errorMessage !== null) {
+            $str .= "\nError Message: " . $errorMessage;
+        }
+
         $str .= "\nResponse Body: " . $this->getResponseBody();
 
         return $str;

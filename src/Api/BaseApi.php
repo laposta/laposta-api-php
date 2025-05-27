@@ -17,7 +17,7 @@ use Psr\Http\Message\UriInterface;
 abstract class BaseApi
 {
     /**
-     * Constructor method to initialize the Laposta instance and request factory.
+     * Constructor method to initialize the Laposta instance.
      *
      * @param Laposta $laposta An instance of the Laposta class.
      */
@@ -141,7 +141,7 @@ abstract class BaseApi
             $formattedBody = $contentType->formatBody($body);
 
             // Create a stream and write the body to the stream
-            $stream = (new StreamFactory())->createStream();
+            $stream = $this->laposta->getStreamFactory()->createStream();
             $stream->write($formattedBody);
             $request = $request->withBody($stream);
 
@@ -180,8 +180,39 @@ abstract class BaseApi
         // Check HTTP status code
         $statusCode = $response->getStatusCode();
         if ($statusCode < 200 || $statusCode >= 300) {
+            $body = (string)$response->getBody();
+            $errorMessage = sprintf('API request failed with status code %d', $statusCode);
+
+            // Try to extract error details from the response body
+            try {
+                $responseData = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+                if (isset($responseData['error']) && is_array($responseData['error'])) {
+                    // Add code, type, parameter and message if available
+                    if (isset($responseData['error']['code'])) {
+                        $errorMessage .= sprintf(', error.code: %s', $responseData['error']['code']);
+                    }
+
+                    if (isset($responseData['error']['type'])) {
+                        $errorMessage .= sprintf(', error.type: %s', $responseData['error']['type']);
+                    }
+
+                    if (isset($responseData['error']['parameter'])) {
+                        $errorMessage .= sprintf(', error.parameter: %s', $responseData['error']['parameter']);
+                    }
+
+                    if (isset($responseData['error']['message'])) {
+                        $errorMessage .= sprintf(', error.message: %s', $responseData['error']['message']);
+                    }
+                }
+            } catch (\JsonException $e) {
+                // If the response body is not valid JSON, add the raw body
+                if (!empty($body) && strlen($body) < 1000) {
+                    $errorMessage .= sprintf(', response body: %s', $body);
+                }
+            }
+
             throw new ApiException(
-                sprintf('API request failed with status code %d', $statusCode),
+                $errorMessage,
                 $request,
                 $response,
             );
@@ -209,7 +240,7 @@ abstract class BaseApi
      */
     protected function getResource(): string
     {
-        // Extract resource name by removing namespace and suffix
+        // Extract the resource name by removing namespace and suffix
         return strtolower(str_replace(['LapostaApi\\Api\\', 'Api'], '', static::class));
     }
 }

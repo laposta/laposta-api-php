@@ -30,7 +30,7 @@ class MemberApiIntegrationTest extends BaseIntegrationTestCase
             try {
                 $this->laposta->memberApi()->delete(self::$listIdForTests, $this->createdMemberId);
             } catch (ApiException $e) {
-                // fwrite(STDERR, 'Cleanup error (member): ' . $e->getMessage() . "\n");
+                 fwrite(STDERR, 'Cleanup error (member): ' . $e->getMessage() . "\n");
             }
         }
         parent::tearDown();
