@@ -34,6 +34,8 @@ use Psr\Http\Message\UriFactoryInterface;
  */
 class Laposta
 {
+    public const VERSION = '2.0.0'; // Version of this package.
+
     protected string $apiHost = 'api.laposta.nl';
     protected string $apiVersion = 'v2';
     protected string $apiProtocol = 'https';
@@ -45,7 +47,8 @@ class Laposta
     protected StreamFactoryInterface $streamFactory;
     protected UriFactoryInterface $uriFactory;
 
-    public const VERSION = '2.0.0-rc.1'; // Version of this package.
+    protected array $apiInstances = [];
+    protected bool $reuseApiInstances;
 
     /**
      * Constructor to initialize the Laposta client with required configurations.
@@ -56,6 +59,7 @@ class Laposta
      * @param ?ResponseFactoryInterface $responseFactory Optional: A custom response factory.
      * @param ?StreamFactoryInterface $streamFactory Optional: A custom stream factory.
      * @param ?UriFactoryInterface $uriFactory Optional: A custom URI factory.
+     * @param bool $reuseApiInstances bool $reuseApiInstances Whether to cache API instances for reuse (default: true).
      */
     public function __construct(
         string $apiKey,
@@ -64,8 +68,10 @@ class Laposta
         ?ResponseFactoryInterface $responseFactory = null,
         ?StreamFactoryInterface $streamFactory = null,
         ?UriFactoryInterface $uriFactory = null,
+        bool $reuseApiInstances = true,
     ) {
         $this->apiKey = $apiKey;
+        $this->reuseApiInstances = $reuseApiInstances;
         $this->responseFactory = $responseFactory ?? new ResponseFactory();
         $this->streamFactory = $streamFactory ?? new StreamFactory();
         $this->uriFactory = $uriFactory ?? new UriFactory();
@@ -178,13 +184,53 @@ class Laposta
     }
 
     /**
+     * Enable or disable caching of API instances.
+     *
+     * @param bool $reuseApiInstances True to enable caching, false to disable
+     * @return void
+     */
+    public function setReuseApiInstances(bool $reuseApiInstances): void
+    {
+        $this->reuseApiInstances = $reuseApiInstances;
+
+        // If caching is disabled, remove all instances
+        if (!$reuseApiInstances) {
+            $this->clearApiInstances();
+        }
+    }
+
+    /**
+     * Removes all cached API instances.
+     *
+     * @return void
+     */
+    public function clearApiInstances(): void
+    {
+        $this->apiInstances = [];
+    }
+
+    /**
+     * Helper method to retrieve or create an API instance, with caching.
+     *
+     * @template T
+     * @param class-string<T> $className The class name of the API instance
+     * @return T The API instance
+     */
+    protected function getApiInstance(string $className)
+    {
+        return $this->reuseApiInstances
+            ? $this->apiInstances[$className] ??= new $className($this)
+            : new $className($this);
+    }
+
+    /**
      * Get an instance of the Campaign API class.
      *
      * @return CampaignApi The Campaign API instance.
      */
     public function campaignApi(): CampaignApi
     {
-        return new CampaignApi($this);
+        return $this->getApiInstance(CampaignApi::class);
     }
 
     /**
@@ -194,7 +240,7 @@ class Laposta
      */
     public function fieldApi(): FieldApi
     {
-        return new FieldApi($this);
+        return $this->getApiInstance(FieldApi::class);
     }
 
     /**
@@ -204,7 +250,7 @@ class Laposta
      */
     public function listApi(): ListApi
     {
-        return new ListApi($this);
+        return $this->getApiInstance(ListApi::class);
     }
 
     /**
@@ -214,7 +260,7 @@ class Laposta
      */
     public function memberApi(): MemberApi
     {
-        return new MemberApi($this);
+        return $this->getApiInstance(MemberApi::class);
     }
 
     /**
@@ -224,7 +270,7 @@ class Laposta
      */
     public function reportApi(): ReportApi
     {
-        return new ReportApi($this);
+        return $this->getApiInstance(ReportApi::class);
     }
 
     /**
@@ -234,7 +280,7 @@ class Laposta
      */
     public function segmentApi(): SegmentApi
     {
-        return new SegmentApi($this);
+        return $this->getApiInstance(SegmentApi::class);
     }
 
     /**
@@ -244,6 +290,6 @@ class Laposta
      */
     public function webhookApi(): WebhookApi
     {
-        return new WebhookApi($this);
+        return $this->getApiInstance(WebhookApi::class);
     }
 }
