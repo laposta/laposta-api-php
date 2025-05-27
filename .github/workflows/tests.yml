@@ -10,6 +10,10 @@ on:
 jobs:
     test:
         runs-on: ubuntu-latest
+        permissions:
+          contents: read
+          actions: read
+          checks: write
 
         steps:
             - name: Checkout code
