@@ -1,6 +1,4 @@
 /.github/ export-ignore
-/examples/ export-ignore
-/standalone/ export-ignore
 /tests/ export-ignore
 .codecov.yml export-ignore
 captainhook.json export-ignore
