@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2025-01-06
+
+### Added
+
+- `ListApi::syncMembers()` for the JSON actions-based member sync endpoint, plus the accompanying `SyncAction` enum, integration test, and runnable example.
+
+### Deprecated
+
+- `ListApi::addOrUpdateMembers()` and `BulkMode` now point to the new syncMembers + SyncAction API.
+
+
 ## [2.0.1] - 2025-05-29
 
 ### Fixed

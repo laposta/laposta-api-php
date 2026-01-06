@@ -9,6 +9,8 @@ namespace LapostaApi\Type;
  *
  * This enum is used to specify the behavior when performing bulk operations
  * on resources in the Laposta API.
+ *
+ * @deprecated Use {@see SyncAction} with {@see \LapostaApi\Api\ListApi::syncMembers()}.
  */
 enum BulkMode: string
 {

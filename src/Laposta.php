@@ -34,7 +34,7 @@ use Psr\Http\Message\UriFactoryInterface;
  */
 class Laposta
 {
-    public const VERSION = '2.0.0'; // Version of this package.
+    public const VERSION = '2.1.0'; // Version of this package.
 
     protected string $apiHost = 'api.laposta.nl';
     protected string $apiVersion = 'v2';

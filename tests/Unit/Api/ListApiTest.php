@@ -6,6 +6,7 @@ namespace LapostaApi\Tests\Unit\Api;
 
 use LapostaApi\Api\ListApi;
 use LapostaApi\Type\ContentType;
+use LapostaApi\Type\SyncAction;
 
 class ListApiTest extends BaseTestCase
 {
@@ -192,6 +193,47 @@ class ListApiTest extends BaseTestCase
             'POST',
             "/list/$listId/members",
             $bulkData,
+            $responseData,
+            ContentType::JSON,
+        );
+    }
+
+    public function testSyncMembers(): void
+    {
+        $listId = 'list123';
+        $syncData = [
+            'actions' => array_map(static fn (SyncAction $action) => $action->value, [
+                SyncAction::ADD,
+                SyncAction::UPDATE,
+            ]),
+            'members' => [
+                [
+                    'email' => 'sync-john@example.com',
+                    'state' => 'active',
+                ],
+                [
+                    'email' => 'sync-jane@example.com',
+                    'state' => 'subscribed',
+                ],
+            ],
+        ];
+
+        $responseData = [
+            'success' => true,
+            'report' => [
+                'added_count' => 1,
+                'edited_count' => 1,
+                'unsubscribed_count' => 0,
+            ],
+        ];
+
+        $this->executeApiTest(
+            fn() => $this->listApi->syncMembers($listId, $syncData),
+            200,
+            $responseData,
+            'POST',
+            "/list/$listId/members",
+            $syncData,
             $responseData,
             ContentType::JSON,
         );

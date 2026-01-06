@@ -125,11 +125,48 @@ class ListApi extends BaseApi
      * @param array $data The data for the bulk operation.
      *
      * @return array Response data.
+     *
+     * @deprecated Use {@see ListApi::syncMembers()} with the new SyncAction-based payload.
+     *
      * @throws ApiException
      * @throws ClientException
      * @throws \JsonException
      */
     public function addOrUpdateMembers(string $listId, array $data): array
+    {
+        @trigger_error(
+            'ListApi::addOrUpdateMembers() is deprecated. Use ListApi::syncMembers() with actions instead.',
+            E_USER_DEPRECATED
+        );
+
+        return $this->sendRequest(
+            'POST',
+            [$listId, 'members'],
+            body: $data,
+            contentType: ContentType::JSON,
+        );
+    }
+
+    /**
+     * Sync members for a list using the JSON actions payload.
+     *
+     * Required keys:
+     *  - 'actions': array containing one or more {@see \LapostaApi\Type\SyncAction} values
+     *               (or strings: add, update, unsubscribe_excluded)
+     *  - 'members': array of member definitions (1 - 500,000 items)
+     *
+     * Including {@see \LapostaApi\Type\SyncAction::UNSUBSCRIBE_EXCLUDED} ensures that any existing member
+     * omitted from the provided 'members' collection will automatically be unsubscribed.
+     *
+     * @param string $listId The ID of the list to sync members for.
+     * @param array $data The sync payload, including 'actions' and 'members'.
+     *
+     * @return array Response data.
+     * @throws ApiException
+     * @throws ClientException
+     * @throws \JsonException
+     */
+    public function syncMembers(string $listId, array $data): array
     {
         return $this->sendRequest(
             'POST',

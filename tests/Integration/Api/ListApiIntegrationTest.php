@@ -7,6 +7,7 @@ namespace LapostaApi\Tests\Integration\Api;
 use LapostaApi\Exception\ApiException;
 use LapostaApi\Tests\Integration\BaseIntegrationTestCase;
 use LapostaApi\Type\BulkMode;
+use LapostaApi\Type\SyncAction;
 
 class ListApiIntegrationTest extends BaseIntegrationTestCase
 {
@@ -180,6 +181,9 @@ class ListApiIntegrationTest extends BaseIntegrationTestCase
         $this->assertEquals(0, $response['list']['members']['cleaned']);
     }
 
+    /**
+     * @deprecated Legacy bulk endpoint with the deprecated mode parameter.
+     */
     public function testAddOrUpdateMembers(): void
     {
         // First, create a list for testing member operations
@@ -222,6 +226,7 @@ class ListApiIntegrationTest extends BaseIntegrationTestCase
         $this->assertArrayHasKey('skipped_count', $response['report']);
         $this->assertArrayHasKey('edited_count', $response['report']);
         $this->assertArrayHasKey('added_count', $response['report']);
+        $this->assertArrayHasKey('unsubscribed_count', $response['report']);
 
         // Verify that we have the arrays for different categories of members
         $this->assertArrayHasKey('errors', $response);
@@ -235,11 +240,81 @@ class ListApiIntegrationTest extends BaseIntegrationTestCase
         $this->assertEquals(0, $response['report']['skipped_count']);
         $this->assertEquals(0, $response['report']['edited_count']);
         $this->assertEquals(2, $response['report']['added_count']);
+        $this->assertEquals(0, $response['report']['unsubscribed_count']);
 
         // Verify that the number of items in each array matches the reported counts
         $this->assertCount($response['report']['errors_count'], $response['errors']);
         $this->assertCount($response['report']['skipped_count'], $response['skipped']);
         $this->assertCount($response['report']['edited_count'], $response['edited']);
         $this->assertCount($response['report']['added_count'], $response['added']);
+    }
+
+    public function testSyncMembers(): void
+    {
+        $listName = 'Test List Sync Members - ' . $this->generateRandomString();
+        $createData = [
+            'name' => $listName,
+            'from_email' => 'testsync@example.com',
+            'from_name' => 'Test Sync Members',
+            'remarks' => 'Integration test list for sync members operation',
+        ];
+        $createdList = $this->laposta->listApi()->create($createData);
+        $this->createdListId = $createdList['list']['list_id'];
+
+        $memberToUnsubscribeEmail = 'sync-remove-' . $this->generateRandomString() . '@example.com';
+        $createdMember = $this->laposta->memberApi()->create($this->createdListId, [
+            'email' => $memberToUnsubscribeEmail,
+            'ip' => '123.123.123.200',
+        ]);
+        $memberIdToUnsubscribe = $createdMember['member']['member_id'];
+
+        $data = [
+            'actions' => [
+                SyncAction::ADD,
+                SyncAction::UPDATE,
+                SyncAction::UNSUBSCRIBE_EXCLUDED, // members not present in 'members' will be unsubscribed
+            ],
+            'members' => [
+                [
+                    'email' => 'sync1@example.com',
+                ],
+                [
+                    'email' => 'sync2@example.com',
+                ],
+                [
+                    'email' => 'error',
+                ],
+            ],
+        ];
+
+        $response = $this->laposta->listApi()->syncMembers($this->createdListId, $data);
+
+        $this->assertArrayHasKey('report', $response);
+        $this->assertArrayHasKey('provided_count', $response['report']);
+        $this->assertArrayHasKey('errors_count', $response['report']);
+        $this->assertArrayHasKey('skipped_count', $response['report']);
+        $this->assertArrayHasKey('edited_count', $response['report']);
+        $this->assertArrayHasKey('added_count', $response['report']);
+        $this->assertArrayHasKey('unsubscribed_count', $response['report']);
+
+        $this->assertArrayHasKey('errors', $response);
+        $this->assertArrayHasKey('skipped', $response);
+        $this->assertArrayHasKey('edited', $response);
+        $this->assertArrayHasKey('added', $response);
+
+        $this->assertEquals(3, $response['report']['provided_count']);
+        $this->assertEquals(1, $response['report']['errors_count']);
+        $this->assertEquals(0, $response['report']['skipped_count']);
+        $this->assertEquals(0, $response['report']['edited_count']);
+        $this->assertEquals(2, $response['report']['added_count']);
+        $this->assertEquals(1, $response['report']['unsubscribed_count']);
+
+        $this->assertCount($response['report']['errors_count'], $response['errors']);
+        $this->assertCount($response['report']['skipped_count'], $response['skipped']);
+        $this->assertCount($response['report']['edited_count'], $response['edited']);
+        $this->assertCount($response['report']['added_count'], $response['added']);
+
+        $memberAfterSync = $this->laposta->memberApi()->get($this->createdListId, $memberIdToUnsubscribe);
+        $this->assertEquals('unsubscribed', $memberAfterSync['member']['state']);
     }
 }

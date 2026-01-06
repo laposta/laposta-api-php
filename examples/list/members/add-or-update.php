@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @deprecated This example uses the legacy 'mode' payload. See sync.php for the current actions-based example.
+ */
+
 require_once __DIR__ . '/../../bootstrap.php';
 
 use LapostaApi\Exception\ApiException;
