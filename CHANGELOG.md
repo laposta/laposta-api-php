@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2025-01-09
+
+### Added
+
+- Scoped distribution build tooling and release workflow for plugin-safe usage.
+- Scoped build smoke test script.
+- Third-party PSR license copies in `third-party-licenses/`.
+
+### Changed
+
+- Manual installation documentation to recommend the scoped build and clarify unscoped usage risks.
+
 ## [2.1.0] - 2025-01-06
 
 ### Added

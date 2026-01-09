@@ -24,9 +24,32 @@ The easiest way to install this library is by requiring it via [Composer](https:
 composer require laposta/laposta-api-php
 ```
 
-## Manual Installation ##
+## Manual Installation (Scoped, Recommended) ##
 
-If you're not using Composer, include the autoloader:
+This is the recommended manual installation path. In WordPress and other plugin ecosystems, multiple plugins may
+bundle different PSR-7 versions under the same `Psr\` namespace. The scoped build avoids fatal interface signature
+conflicts by prefixing vendor dependencies.
+
+1. Download the scoped zip:
+   - Latest release (look under Assets): https://github.com/laposta/laposta-api-php/releases/latest
+   - Specific version: https://github.com/laposta/laposta-api-php/releases/download/X.Y.Z/laposta-api-scoped-X.Y.Z.zip
+2. Extract it into your plugin (or another shared location).
+3. Load the scoped autoloader:
+
+```php
+require_once __DIR__ . '/laposta-api-scoped/autoload.php';
+```
+
+This build prefixes all vendor dependencies under `LapostaApi\Vendor\*`, so no global `Psr\*` symbols are introduced.
+The scoped build is intended for the default HTTP client; if you need to inject your own PSR-18/17/7
+implementations, use the Composer distribution instead.
+
+## Manual Installation (Unscoped, Not Recommended) ##
+
+This path should only be used if you fully control the runtime and do not have other plugins/libraries that might
+define `Psr\*` symbols. In WordPress and other plugin ecosystems, use the scoped build above.
+
+To use the unscoped bundle, include the autoloader:
 
 ```php
 require_once("/path/to/laposta-api-php/standalone/autoload.php");
