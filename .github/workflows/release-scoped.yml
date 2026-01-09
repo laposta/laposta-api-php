@@ -33,8 +33,7 @@ jobs:
 
             - name: Package scoped archive
               run: |
-                  VERSION="${GITHUB_REF_NAME}"
-                  ZIP_NAME="laposta-api-scoped-${VERSION}.zip"
+                  ZIP_NAME="laposta-api-scoped.zip"
                   cd build/scoped
                   zip -r "../${ZIP_NAME}" .
 
@@ -42,4 +41,4 @@ jobs:
               if: github.event_name == 'release'
               uses: softprops/action-gh-release@v2
               with:
-                  files: build/laposta-api-scoped-${{ github.ref_name }}.zip
+                  files: build/laposta-api-scoped.zip

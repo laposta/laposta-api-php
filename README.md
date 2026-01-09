@@ -31,8 +31,8 @@ bundle different PSR-7 versions under the same `Psr\` namespace. The scoped buil
 conflicts by prefixing vendor dependencies.
 
 1. Download the scoped zip:
-   - Latest release (look under Assets): https://github.com/laposta/laposta-api-php/releases/latest
-   - Specific version: https://github.com/laposta/laposta-api-php/releases/download/X.Y.Z/laposta-api-scoped-X.Y.Z.zip
+   - Latest release (direct download): https://github.com/laposta/laposta-api-php/releases/latest/download/laposta-api-scoped.zip
+   - Specific version: https://github.com/laposta/laposta-api-php/releases/download/X.Y.Z/laposta-api-scoped.zip
 2. Extract it into your plugin (or another shared location).
 3. Load the scoped autoloader:
 
