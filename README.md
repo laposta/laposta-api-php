@@ -24,11 +24,39 @@ The easiest way to install this library is by requiring it via [Composer](https:
 composer require laposta/laposta-api-php
 ```
 
-## Manual Installation (Scoped, Recommended) ##
+## Manual Installation (Version-Scoped, Recommended) ##
 
-This is the recommended manual installation path. In WordPress and other plugin ecosystems, multiple plugins may
-bundle different PSR-7 versions under the same `Psr\` namespace. The scoped build avoids fatal interface signature
-conflicts by prefixing vendor dependencies.
+This is the recommended manual installation path for WordPress and other plugin ecosystems. Multiple plugins may
+bundle different PSR-7 versions and different releases of `laposta-api-php` in the same runtime. The version-scoped
+build avoids both kinds of collisions by prefixing vendor dependencies and rewriting the public namespace to a
+release-specific value.
+
+1. Download the version-scoped zip:
+   - Latest release (direct download): https://github.com/laposta/laposta-api-php/releases/latest/download/laposta-api-version-scoped.zip
+   - Specific version: https://github.com/laposta/laposta-api-php/releases/download/X.Y.Z/laposta-api-version-scoped.zip
+2. Extract it into your plugin (or another shared location).
+3. Load the version-scoped autoloader:
+
+```php
+require_once __DIR__ . '/laposta-api-version-scoped/autoload.php';
+```
+
+The namespace suffix is derived from the release semantic version by concatenating major, minor, and patch.
+For example, release `2.3.0` exposes `LapostaApi230\Laposta`.
+
+```php
+$laposta = new LapostaApi230\Laposta('your_api_key');
+```
+
+This build prefixes vendor dependencies under `LapostaApi230\Vendor\*`, so no global `Psr\*` symbols are introduced.
+The version-scoped build is intended for the default HTTP client; if you need to inject your own PSR-18/17/7
+implementations, use the Composer distribution instead.
+
+## Manual Installation (Scoped, Compatibility Option) ##
+
+This distribution only scopes vendor dependencies and keeps the public `LapostaApi\*` namespace unchanged.
+It is mainly useful if you need a stable namespace for compatibility and you know only one Laposta library version
+will be loaded in the runtime.
 
 1. Download the scoped zip:
    - Latest release (direct download): https://github.com/laposta/laposta-api-php/releases/latest/download/laposta-api-scoped.zip
@@ -40,14 +68,13 @@ conflicts by prefixing vendor dependencies.
 require_once __DIR__ . '/laposta-api-scoped/autoload.php';
 ```
 
-This build prefixes all vendor dependencies under `LapostaApi\Vendor\*`, so no global `Psr\*` symbols are introduced.
-The scoped build is intended for the default HTTP client; if you need to inject your own PSR-18/17/7
-implementations, use the Composer distribution instead.
+This build prefixes vendor dependencies under `LapostaApi\Vendor\*`, but it does not isolate the public
+`LapostaApi\*` namespace across plugin versions.
 
 ## Manual Installation (Unscoped, Not Recommended) ##
 
 This path should only be used if you fully control the runtime and do not have other plugins/libraries that might
-define `Psr\*` symbols. In WordPress and other plugin ecosystems, use the scoped build above.
+define `Psr\*` symbols. In WordPress and other plugin ecosystems, use the version-scoped build above.
 
 To use the unscoped bundle, include the autoloader:
 

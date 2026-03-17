@@ -25,19 +25,32 @@ jobs:
               run: composer install --prefer-dist --no-progress
 
             - name: Build scoped distribution
+              env:
+                  LAPOSTA_RELEASE_VERSION: ${{ github.event.release.tag_name }}
               run: composer build:scoped
+
+            - name: Build version-scoped distribution
+              env:
+                  LAPOSTA_RELEASE_VERSION: ${{ github.event.release.tag_name }}
+              run: composer build:version-scoped
 
             - name: Smoke test scoped build
               run: bash scripts/test-scoped.sh
 
-            - name: Package scoped archive
-              run: |
-                  ZIP_NAME="laposta-api-scoped.zip"
-                  cd build/scoped
-                  zip -r "../${ZIP_NAME}" .
+            - name: Smoke test version-scoped build
+              run: bash scripts/test-version-scoped.sh
 
-            - name: Upload release asset
+            - name: Package scoped archives
+              run: |
+                  cd build/scoped
+                  zip -r ../laposta-api-scoped.zip .
+                  cd ../version-scoped
+                  zip -r ../laposta-api-version-scoped.zip .
+
+            - name: Upload release assets
               if: github.event_name == 'release'
               uses: softprops/action-gh-release@v2
               with:
-                  files: build/laposta-api-scoped.zip
+                  files: |
+                      build/laposta-api-scoped.zip
+                      build/laposta-api-version-scoped.zip

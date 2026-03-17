@@ -42,7 +42,11 @@
         }
     },
     "scripts": {
-        "build:scoped": "bash scripts/build-scoped.sh",
+        "build:scoped": "bash scripts/build-scoped.sh scoped",
+        "build:version-scoped": "bash scripts/build-scoped.sh version-scoped",
+        "build:all-scoped": "bash scripts/build-scoped.sh all",
+        "test:scoped": "bash scripts/test-scoped.sh",
+        "test:version-scoped": "bash scripts/test-version-scoped.sh",
         "test": "phpunit",
         "cs": "vendor/bin/phpcs --standard=PSR12 examples/ src/ tests/ standalone/autoload.php",
         "cs:fix": "vendor/bin/phpcbf --standard=PSR12 examples/ src/ tests/ standalone/autoload.php",
