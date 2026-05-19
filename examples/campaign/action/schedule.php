@@ -22,10 +22,15 @@ $laposta = new Laposta($apiKey);
 $campaignApi = $laposta->campaignApi();
 
 // Schedule campaign
-$deliveryRequested = '2099-12-31 23:59:59';
+// You can pass '2099-12-31 23:59:59' directly; the API interprets it in the account timezone.
+// Here we use DateTimeImmutable with an explicit timezone, which the SDK sends with an offset.
+// UTC DateTimeInterface values are sent with +00:00.
+$accountTimezone = new \DateTimeZone('Europe/Amsterdam');
+$deliveryRequested = new \DateTimeImmutable('2099-12-31 23:59:59', $accountTimezone);
+$deliveryRequestedLabel = $deliveryRequested->format('Y-m-d H:i:s P');
 try {
     $result = $campaignApi->schedule($campaignId, $deliveryRequested);
-    echo "Campaign with ID '$campaignId' scheduled for sending at '$deliveryRequested'" . " successfully:\n";
+    echo "Campaign with ID '$campaignId' scheduled for sending at '$deliveryRequestedLabel'" . " successfully:\n";
     print_r($result);
 } catch (ApiException $e) {
     echo "ApiException: " . $e->getMessage() . "\n";

@@ -6,6 +6,8 @@ namespace LapostaApi\Tests\Integration\Api;
 
 use LapostaApi\Exception\ApiException;
 use LapostaApi\Laposta;
+use LapostaApi\Query\CampaignHistoryQuery;
+use LapostaApi\Result\HistoryResult;
 use LapostaApi\Tests\Integration\BaseIntegrationTestCase;
 
 class CampaignApiIntegrationTest extends BaseIntegrationTestCase
@@ -33,6 +35,7 @@ class CampaignApiIntegrationTest extends BaseIntegrationTestCase
                 fwrite(STDERR, "Cleanup error (campaign): " . $e->getMessage() . "\n");
             }
         }
+
         parent::tearDown();
     }
 
@@ -203,6 +206,30 @@ class CampaignApiIntegrationTest extends BaseIntegrationTestCase
             }
         }
         $this->assertTrue($found, 'Created campaign not found in all campaigns response.');
+    }
+
+    public function testGetCampaignHistory(): void
+    {
+        $campaignName = 'History Test Campaign - ' . $this->generateRandomString();
+        $createData = $this->createCampaignData([
+            'name' => $campaignName,
+            'subject' => 'History Subject',
+        ]);
+
+        $createdCampaign = $this->laposta->campaignApi()->create($createData);
+        $this->createdCampaignId = $createdCampaign['campaign']['campaign_id'];
+        $query = CampaignHistoryQuery::create()->withLimit(1);
+        $response = $this->laposta->campaignApi()->history($this->createdCampaignId, $query);
+
+        $this->assertInstanceOf(HistoryResult::class, $response);
+        $this->assertIsArray($response->toArray());
+        $this->assertArrayHasKey('limit', $response->pagination());
+        $this->assertSame(1, $response->pagination()['limit']);
+        $this->assertArrayHasKey('has_more', $response->pagination());
+        $this->assertArrayHasKey('next_cursor', $response->pagination());
+        $this->assertIsArray($response->order());
+        $this->assertIsArray($response->filters());
+        $this->assertLessThanOrEqual(1, count($response->events()));
     }
 
     public function testGetAndUpdateContent(): void

@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2026-05-19
+
+### Added
+
+- `MemberApi::history()` and `CampaignApi::history()` for cursor-paginated member and campaign event history.
+- `MemberHistoryQuery` and `CampaignHistoryQuery` for typed history parameters, including cursor pagination, `limit`, event-date range filters, event-date ordering, and member-history campaign filtering.
+- `HistoryResult` for history responses, with helpers for events, pagination/order/filter metadata, next cursor, fetching the next page, and returning the decoded response data.
+- `SortOrder` enum and shared query parameter helpers/interfaces for reusable typed query handling.
+- `DateTimeInterface` support for history event-date filters and `CampaignApi::schedule()`, while keeping existing string arguments backward compatible.
+- Runnable member and campaign history examples with `HistoryResult` helpers, bounded pagination loops, filter/order options, and concise event output.
+- Schedule example coverage using a `DateTimeImmutable` value.
+- Unit and integration coverage for history request parameters, cursor continuation, deterministic member-history pagination, campaign-history response shape, and schedule datetime handling.
+
 ## [2.3.0] - 2026-03-17
 
 ### Added

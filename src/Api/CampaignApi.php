@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace LapostaApi\Api;
 
+use DateTimeInterface;
 use LapostaApi\Exception\ApiException;
 use LapostaApi\Exception\ClientException;
+use LapostaApi\Query\CampaignHistoryQuery;
+use LapostaApi\Query\CursorQueryParametersInterface;
+use LapostaApi\Result\HistoryResult;
 
 class CampaignApi extends BaseApi
 {
@@ -97,6 +101,49 @@ class CampaignApi extends BaseApi
     }
 
     /**
+     * Get event history for a campaign.
+     *
+     * This performs one cursor-paginated API request. The returned
+     * `HistoryResult` contains the current page and can fetch the next page
+     * with `HistoryResult::next()`.
+     *
+     * Campaign history contains member events tied to this campaign, such as
+     * sent, opened, clicked, bounced, and unsubscribe-related events. It does
+     * not contain ordinary campaign create/update actions.
+     * The API route is `/campaign/{campaign_id}/history`.
+     *
+     * @param string $campaignId The ID of the campaign.
+     * @param CampaignHistoryQuery|null $query Optional history filters, ordering, and pagination.
+     *
+     * @return HistoryResult The campaign history result.
+     * @throws ApiException
+     * @throws ClientException
+     * @throws \JsonException
+     */
+    public function history(string $campaignId, ?CampaignHistoryQuery $query = null): HistoryResult
+    {
+        $query ??= CampaignHistoryQuery::create();
+
+        $response = $this->sendRequest(
+            'GET',
+            [$campaignId, 'history'],
+            queryParams: $query->toQueryParams(),
+        );
+
+        return new HistoryResult(
+            $response,
+            $query,
+            function (CursorQueryParametersInterface $nextQuery) use ($campaignId): HistoryResult {
+                if (!$nextQuery instanceof CampaignHistoryQuery) {
+                    throw new \RuntimeException('Expected a campaign history query.');
+                }
+
+                return $this->history($campaignId, $nextQuery);
+            },
+        );
+    }
+
+    /**
      * Get campaign content.
      *
      * @param string $campaignId The ID of the campaign.
@@ -152,20 +199,29 @@ class CampaignApi extends BaseApi
     }
 
     /**
-     * Schedule campaign.
+     * Schedule campaign delivery.
+     *
+     * String values are sent unchanged. DateTimeInterface values are formatted
+     * with an explicit timezone offset before being sent to the API.
      *
      * @param string $campaignId The ID of the campaign.
      *
-     * @param string $deliveryRequested The time and date of sending (format YYYY-MM-DD HH:MM:SS)
-     *                  in the account's timezone.
+     * @param string|DateTimeInterface $deliveryRequested The time and date of sending. String values are passed
+     *                  through unchanged and may use YYYY-MM-DD HH:MM:SS in the account timezone or an
+     *                  explicit-offset ISO/RFC3339 datetime. DateTimeInterface values are formatted with their
+     *                  timezone offset.
      *
      * @return array The campaign data.
      * @throws ApiException
      * @throws ClientException
      * @throws \JsonException
      */
-    public function schedule(string $campaignId, string $deliveryRequested): array
+    public function schedule(string $campaignId, string|DateTimeInterface $deliveryRequested): array
     {
+        if ($deliveryRequested instanceof DateTimeInterface) {
+            $deliveryRequested = $deliveryRequested->format(DateTimeInterface::ATOM);
+        }
+
         $data = [
             'delivery_requested' => $deliveryRequested,
         ];
